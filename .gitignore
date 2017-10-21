@@ -1,3 +1,4 @@
 node_modules/
-/config.js
+# We commit this, beacause heroku needs it and cannot run init.sh there. Will be removed on production.
+#/config.js
 /logs/
