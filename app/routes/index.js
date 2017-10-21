@@ -39,7 +39,6 @@ router.post('/auth/refreshSession',
     AuthController.refreshSession
 );
 
-
 /**
  * For test purporses
  */
