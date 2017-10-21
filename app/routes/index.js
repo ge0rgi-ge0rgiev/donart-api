@@ -49,6 +49,19 @@ router.post('/test', TestController.test);
  *  404 Not Found route
  */
 router.post('*', ApiController.notFound);
-router.get('*', ApiController.notFound);
+
+/**
+ * List of available endpoints
+ */
+router.get('/api', (req, res) => res.json({data: 
+    "Comming soon."
+}));
+
+/**
+ * Restrict the rest get requests
+ */
+router.get('*', (req, res) => res.json({data: 
+    "Donart API recieves only POST requests."
+}));
 
 module.exports = router;
