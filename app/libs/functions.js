@@ -44,7 +44,7 @@ module.exports = {
             transports: [
                 new winston.transports.File({
                     label: "Donart API erros",
-                    filename: config.api.appRoot + 'logs/errros.log',
+                    filename: config.api.appRoot + 'logs/errors.log',
                     maxsize: 2000000,
                     eol: "\n\n",
                 })

@@ -18,7 +18,7 @@ app.use( bodyParser.json() );
 app.use( middlewares.authMiddleware );
 
 // Request logger
-app.use( functions.requestLogger() );
+// app.use( functions.requestLogger() );
 
 // API success middleware
 app.use( middlewares.httpSuccess );
