@@ -3,6 +3,6 @@ let functions = require('../libs/functions'),
 
 exports.test = (req, res, next) => {
     // return res.sendSuccess({foo: 123});
-    // throw new errors.DatabaseError();
+    throw new errors.DatabaseError();
     // throw new SyntaxError("useful error message");
 }
