@@ -7,42 +7,17 @@ module.exports = {
     /**
      * Check the auth session for protected resources
      * 
-     * TODO: Define different error handlers ( error responses )
-     * 
      */
     authMiddleware: function (req, res, next) {
         // The requested endpoint is unprotected?
-        if (config.protectedEndpoints.indexOf(req.originalUrl.substr(1)) === -1) {
-            next();
-            return;
-        }
-
-        // Get authentication token from http headers
-        let _authToken = req.headers.authtoken || undefined;
-
-        // If there`s no token supplied
-        if (!_authToken) throw new errors.Unauthorized();
-
+        if (config.protectedEndpoints.indexOf(req.originalUrl) === -1) return next();
 
         let SessionModel = require('../models/SessionModel');
 
-        // Get session object
-        SessionModel.getSessionData({ authToken: _authToken })
-            .then(function (session) {
-                // If there`s no session associated with the token
-                if (!session) throw new errors.Unauthorized('Invalid authentication token.');
-                return session;
-            })
-            .then(function (session) {
-                // Check for session expiration date
-                if (functions.isBeforeCurrentTime(session.expiration)) throw new errors.InvalidParameters('Your session has expired.');
-
-                // Update the expiration time of the session
-                session.expiration = functions.getDateObject(config.api.sessionDuration);
-                SessionModel.saveSession(session);
-                next();
-                return;
-            })
+        // Get session data by authToken, update the expiration and proceed
+        SessionModel.getSessionByAuthToken(req, res)
+            .then(session => SessionModel.updateExpirationTime(session))
+            .then(() => next())
             .catch(err => next(err));
     },
 
@@ -91,8 +66,8 @@ module.exports = {
 
     // Specific route middlewares
     routes: {
-        auth: {
-            authenticate: function (req, res, next) {
+        user: {
+            login: function (req, res, next) {
                 const bcrypt = require('bcrypt');
                 bcrypt.hash(req.body.password, config.api.salt)
                     .then((hashedPassword) => {

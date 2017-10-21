@@ -8,7 +8,7 @@ const bcrypt = require('bcrypt'),
  * API token authentication
  * 
  */
-exports.authenticate = (req, res, next) => {
+exports.login = (req, res, next) => {
     let UserModel = require('../models/UserModel');
     let SessionModel = require('../models/SessionModel');
 
@@ -22,14 +22,12 @@ exports.authenticate = (req, res, next) => {
         .then((user) => {
             // Check for previously created user session
             return SessionModel.getSessionData({ userId: user.id })
-                .then((session) => { return { user, session } });
+                .then((session) => { return {user, session} });
         })
         .then((data) => {
             // If there is a created session, update the session expiration and return the session object
             if (data.session) {
-                data.session.expiration = functions.getDateObject(config.api.session5Duration);
-                SessionModel.saveSession(data.session)
-                    .then((session) => { return res.sendSuccess(session) });
+                return SessionModel.updateExpirationTime(data.session)
             } else {
                 // We have to create new session object, that`s why we need the user details
                 const UIDGenerator = new require('uid-generator');
@@ -42,9 +40,9 @@ exports.authenticate = (req, res, next) => {
                     refresh_token: uidgen.generateSync(),
                     expiration: functions.getDateObject(config.api.sessionDuration)
                 })
-                    .then((session) => { return res.sendSuccess(session) });
             }
         })
+        .then(session => res.sendSuccess(session))
         .catch(err => next(err));
 }
 
@@ -63,11 +61,7 @@ exports.refreshSession = (req, res, next) => {
             if (session === undefined) throw new errors.InvalidParameters('Invalid refresh token.');
             return session;
         })
-        .then((session) => {
-            // Update the expiration of session and save it
-            session.expiration = functions.getDateObject(config.api.sessionDuration);
-            SessionModel.saveSession(session)
-                .then((session) => { return res.sendSuccess(session) });
-        })
+        .then(session => SessionModel.updateExpirationTime(session))
+        .then(session => res.sendSuccess(session))        
         .catch(err => next(err));
 }

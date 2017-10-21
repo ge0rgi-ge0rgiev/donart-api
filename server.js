@@ -8,7 +8,7 @@ const express = require('express'),
     app = express();
 
 // Set response timeout to X seconds
-app.use( timeout('10s') );
+app.use( timeout('20s') );
 
 // Parse "x-www-form-urlencoded" and "application/json" header request bodies
 app.use( bodyParser.urlencoded({ extended: true }) );

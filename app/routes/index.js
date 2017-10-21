@@ -5,14 +5,14 @@ const router = require('express').Router()
     { check, validationResult } = require('express-validator/check')
 
     ApiController = require('../controllers/ApiController'),
-    AuthController = require('../controllers/AuthController'),
+    UserController = require('../controllers/UserController'),
     TestController = require('../controllers/TestController');
 
 /**
  * Authenticate user with userId and password
  * 
  */
-router.post('/auth/authenticate',
+router.post('/user/login',
     [
         check('userId')
             .exists().withMessage('User ID is required.'),
@@ -21,22 +21,22 @@ router.post('/auth/authenticate',
             .isLength({ min: 3 }).withMessage('Passwords must be at least 3 chars long.'),
     ],
     middlewares.validatorResult,
-    middlewares.routes.auth.authenticate,
-    AuthController.authenticate
+    middlewares.routes.user.login,
+    UserController.login
 );
 
 /**
  * Refresh user session by Refresh Token
  * 
  */
-router.post('/auth/refreshSession',
+router.post('/user/refreshSession',
     [
         check('refreshToken')
             .exists().withMessage('Refresh token header parameter is required for update the session.')
             .isLength({ min: 50, max: 50 }).withMessage('Invalid refreshToken.'),
     ],
     middlewares.validatorResult,
-    AuthController.refreshSession
+    UserController.refreshSession
 );
 
 /**
