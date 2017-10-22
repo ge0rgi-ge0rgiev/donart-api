@@ -53,6 +53,7 @@ const router = require('express').Router()
              * 
              */
             router.post('/users/save',
+                middlewares.adminOnlyCheck,
                 upload.single('avatar'),
                 middlewares.routes.users.save,
                 UserController.save
