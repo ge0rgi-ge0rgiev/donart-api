@@ -5,6 +5,7 @@ const express = require('express'),
     bodyParser = require('body-parser'),
     router = require('./app/routes'), // The endpoint router
     functions = require('./app/libs/functions'),
+    validator = require('express-validator'),
     app = express();
 
 // Set response timeout to X seconds
@@ -13,6 +14,9 @@ app.use( timeout('20s') );
 // Parse "x-www-form-urlencoded" and "application/json" header request bodies
 app.use( bodyParser.urlencoded({ extended: true }) );
 app.use( bodyParser.json() );
+
+// Use express-validator
+app.use( validator() );
 
 // API Token Authentication
 app.use( middlewares.authMiddleware );

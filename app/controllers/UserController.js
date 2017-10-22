@@ -62,6 +62,38 @@ exports.refreshSession = (req, res, next) => {
             return session;
         })
         .then(session => SessionModel.updateExpirationTime(session))
-        .then(session => res.sendSuccess(session))        
+        .then(session => res.sendSuccess(session))
+        .catch(err => next(err));
+}
+
+
+/**
+ * Create or update existing user
+ * 
+ */
+exports.save = (req, res, next) => {
+    let UserModel = require('../models/UserModel');
+
+    UserModel.save(req.body)
+        .then((user) => {
+            res.locals.user = user;
+            // Check for uploaded file
+            if (req.file) {
+                res.locals.user = user;
+                let filename = 'user_' + user.id + '.' + (req.file.mimetype.split('/')[1]);
+                return functions.moveUploadedFiles(req.file.path, [config.api.uploadDir.avatars, filename]);
+            }
+        })
+        .then((avatar) => {
+            // Update the avatar if there`s is file upload
+            if (avatar) {
+                res.locals.user.avatar = avatar;
+                return UserModel.save(res.locals.user);
+            }
+        })
+        .then((user) => {
+            let data = (user) ? user : res.locals.user;
+            res.sendSuccess(data);
+        })
         .catch(err => next(err));
 }

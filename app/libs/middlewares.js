@@ -1,7 +1,7 @@
 const config = require('../../config'),
     functions = require('./functions'),
     errors = require('./response-errors');
-    
+
 
 module.exports = {
 
@@ -87,14 +87,69 @@ module.exports = {
     // Specific route middlewares
     routes: {
         users: {
-            login: function (req, res, next) {
+
+            /**
+             * Hash user password
+             */
+            login: (req, res, next) => {
                 const bcrypt = require('bcrypt');
                 bcrypt.hash(req.body.password, config.api.salt)
                     .then((hashedPassword) => {
                         req.body.password = hashedPassword;
                         next();
                     });
+            },
+            
+            /**
+             * Validations before user save
+             */
+            save: (req, res, next) => {
+                let missingFile = false;
+                /**
+                 * Update user
+                 */
+                if (req.body.id) {
+                    // Avatar check
+                    if (req.file === undefined) missingFile = true;
+
+                    // name
+                    req.check("name").optional().
+                        isLength({min: 3}).withMessage('Invalid name.');
+
+                    // password
+                    req.check("password").optional()
+                        .isLength({min: 3}).withMessage('Invalid name.');
+                } else {
+                    /**
+                     * Create user
+                     */
+
+                     // name
+                    req.check("name").exists().withMessage('Required field.')
+                        .isLength({min: 3}).withMessage('Invalid name length.');
+
+                    // password
+                    req.check("password").exists().withMessage('Required field.')
+                        .isLength({min: 3}).withMessage('Invalid password length.');
+                }
+
+                // isAdmin
+                req.check("isAdmin").optional().isBoolean().withMessage('Must be boolean.');
+
+                // active state
+                req.check("active").optional().isBoolean().withMessage('Must be boolean.');
+
+                var validationErrors = req.validationErrors();
+
+                // Return validation errors
+                if (validationErrors) return next(validationErrors);
+                
+                // Return missing file error
+                if (missingFile) return next(new errors.MissingParameters('Missing avatar image.'));
+
+                next();
             }
+
         }
     }
 

@@ -52,7 +52,11 @@ const router = require('express').Router()
              * Save user - Create & Update
              * 
              */
-            router.post('/users/save', upload.single('avatar'), UserController.save);
+            router.post('/users/save',
+                upload.single('avatar'),
+                middlewares.routes.users.save,
+                UserController.save
+            );
 
 /**
  * For test purporses

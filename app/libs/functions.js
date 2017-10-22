@@ -57,12 +57,23 @@ Functions.moveUploadedFiles = (from, to) => {
     const fs = require('fs'),
         Promise = require('promise');
 
+    to = (to.constructor === Array) ? to.join('') : to;
     return new Promise((resolve, reject) => {
         fs.rename(from, to, function (err) {
             if (err) return reject(err);
-            resolve();
+            resolve(to);
         });
     });
+}
+
+Functions.normalizeFields = (fieldsObject) => {
+    let newObject = {};
+    Object.keys(fieldsObject).map(function(key, index) {
+        let newKey = key.split(/(?=[A-Z])/).join('_').toLowerCase();
+        newObject[newKey] = fieldsObject[key];
+    });    
+    
+    return newObject;
 }
 
 module.exports = Functions;
