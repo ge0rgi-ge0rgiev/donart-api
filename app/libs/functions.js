@@ -1,4 +1,5 @@
-const config = require('../../config');
+const config = require('../../config'),
+    Promise = require('promise');
 
 let Functions = {};
 
@@ -23,7 +24,7 @@ Functions.requestLogger = () => {
         transports: [
             new winston.transports.File({
                 label: "Donart API request",
-                filename: config.api.appRoot + 'logs/request.log',
+                filename: config.api.logsDir + 'request.log',
                 maxsize: 2000000,
                 eol: "\n\n",
             })
@@ -44,11 +45,23 @@ Functions.errorLogger = () => {
         transports: [
             new winston.transports.File({
                 label: "Donart API erros",
-                filename: config.api.appRoot + 'logs/errors.log',
+                filename: config.api.logsDir + 'errors.log',
                 maxsize: 2000000,
                 eol: "\n\n",
             })
         ]
+    });
+}
+
+Functions.moveUploadedFiles = (from, to) => {
+    const fs = require('fs'),
+        Promise = require('promise');
+
+    return new Promise((resolve, reject) => {
+        fs.rename(from, to, function (err) {
+            if (err) return reject(err);
+            resolve();
+        });
     });
 }
 

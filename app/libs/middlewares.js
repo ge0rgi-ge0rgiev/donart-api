@@ -1,6 +1,7 @@
 const config = require('../../config'),
     functions = require('./functions'),
     errors = require('./response-errors');
+    
 
 module.exports = {
 
@@ -85,7 +86,7 @@ module.exports = {
 
     // Specific route middlewares
     routes: {
-        user: {
+        users: {
             login: function (req, res, next) {
                 const bcrypt = require('bcrypt');
                 bcrypt.hash(req.body.password, config.api.salt)

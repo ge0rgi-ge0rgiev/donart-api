@@ -1,5 +1,10 @@
 
 const router = require('express').Router()
+    config = require('../../config'),
+
+    // File upload
+    multer = require('multer'),
+    upload = multer({ dest: config.api.uploadDir.main}),
 
     middlewares = require('../libs/middlewares'),
     { check, validationResult } = require('express-validator/check')
@@ -25,7 +30,7 @@ const router = require('express').Router()
                         .isLength({ min: 3 }).withMessage('Passwords must be at least 3 chars long.'),
                 ],
                 middlewares.validatorResult,
-                middlewares.routes.user.login,
+                middlewares.routes.users.login,
                 UserController.login
             );
 
@@ -42,6 +47,12 @@ const router = require('express').Router()
                 middlewares.validatorResult,
                 UserController.refreshSession
             );
+
+            /**
+             * Save user - Create & Update
+             * 
+             */
+            router.post('/users/save', upload.single('avatar'), UserController.save);
 
 /**
  * For test purporses
