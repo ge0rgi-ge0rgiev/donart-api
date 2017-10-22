@@ -8,7 +8,7 @@ module.exports = {
      * Check the auth session for protected resources
      * 
      */
-    authMiddleware: function (req, res, next) {
+    authMiddleware: (req, res, next) => {
         // The requested endpoint is unprotected?
         if (config.protectedEndpoints.indexOf(req.originalUrl) === -1) return next();
 
@@ -17,8 +17,27 @@ module.exports = {
         // Get session data by authToken, update the expiration and proceed
         SessionModel.getSessionByAuthToken(req, res)
             .then(session => SessionModel.updateExpirationTime(session))
-            .then(() => next())
+            .then((session) => {
+                // Save session for further usage
+                res.locals.session = session;
+                next();
+            })
             .catch(err => next(err));
+    },
+
+    /**
+     * Admin only check
+     */
+    adminOnlyCheck: (req, res, next) => {
+        let UserModel = require('../models/UserModel');
+
+        UserModel.getUserById(res.locals.session.userId)
+            .then((user) => {
+                if (user.isAdmin === 0) {
+                    return next(new errors.Unauthorized('Admin access only.'));
+                }
+                next();
+            });
     },
 
     // Validates result for express generator checks

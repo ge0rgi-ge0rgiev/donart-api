@@ -13,7 +13,7 @@ exports.login = (req, res, next) => {
     let SessionModel = require('../models/SessionModel');
 
     // Get user object by User ID and hashed Password
-    UserModel.getUser(req.body.userId, req.body.password)
+    UserModel.getUserByCredentials(req.body.userId, req.body.password)
         .then((user) => {
             // Return error if there`s no user corresponding to supplied credentials
             if (user === undefined) throw new errors.InvalidParameters('Invalid user credentials.');

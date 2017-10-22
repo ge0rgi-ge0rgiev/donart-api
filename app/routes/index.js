@@ -8,41 +8,47 @@ const router = require('express').Router()
     UserController = require('../controllers/UserController'),
     TestController = require('../controllers/TestController');
 
-/**
- * Authenticate user with userId and password
- * 
- */
-router.post('/user/login',
-    [
-        check('userId')
-            .exists().withMessage('User ID is required.'),
-        check('password')
-            .exists().withMessage('Password is required.')
-            .isLength({ min: 3 }).withMessage('Passwords must be at least 3 chars long.'),
-    ],
-    middlewares.validatorResult,
-    middlewares.routes.user.login,
-    UserController.login
-);
+    /**
+     * User ednpoints
+     */
 
-/**
- * Refresh user session by Refresh Token
- * 
- */
-router.post('/user/refreshSession',
-    [
-        check('refreshToken')
-            .exists().withMessage('Refresh token header parameter is required for update the session.')
-            .isLength({ min: 50, max: 50 }).withMessage('Invalid refreshToken.'),
-    ],
-    middlewares.validatorResult,
-    UserController.refreshSession
-);
+            /**
+             * Authenticate user with userId and password
+             * 
+             */
+            router.post('/users/login',
+                [
+                    check('userId')
+                        .exists().withMessage('User ID is required.'),
+                    check('password')
+                        .exists().withMessage('Password is required.')
+                        .isLength({ min: 3 }).withMessage('Passwords must be at least 3 chars long.'),
+                ],
+                middlewares.validatorResult,
+                middlewares.routes.user.login,
+                UserController.login
+            );
+
+            /**
+             * Refresh user session by Refresh Token
+             * 
+             */
+            router.post('/users/refreshSession',
+                [
+                    check('refreshToken')
+                        .exists().withMessage('Refresh token header parameter is required for update the session.')
+                        .isLength({ min: 50, max: 50 }).withMessage('Invalid refreshToken.'),
+                ],
+                middlewares.validatorResult,
+                UserController.refreshSession
+            );
 
 /**
  * For test purporses
  */
-router.post('/test', TestController.test);
+// router.post('/test', middlewares.AdminOnlyCheck, TestController.test);
+router.post('/test', middlewares.adminOnlyCheck, TestController.test);
+
 
 /**
  *  404 Not Found route
