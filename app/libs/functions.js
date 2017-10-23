@@ -18,6 +18,7 @@ Functions.isBeforeCurrentTime = (dateObject) => {
     return dateObject < Functions.getDateObject();
 },
 
+// Log request data to log file
 Functions.requestLogger = () => {
     const expressWinston = require('winston-express-middleware'),
         winston = require('winston');
@@ -39,6 +40,7 @@ Functions.requestLogger = () => {
 
 };
 
+// Log the error data in log file
 Functions.errorLogger = () => {
     const expressWinston = require('winston-express-middleware'),
         winston = require('winston');
@@ -54,6 +56,7 @@ Functions.errorLogger = () => {
     });
 }
 
+// Move file from tmp to given destination
 Functions.moveUploadedFiles = (from, to) => {
     const fs = require('fs'),
         Promise = require('promise');
@@ -67,6 +70,7 @@ Functions.moveUploadedFiles = (from, to) => {
     });
 }
 
+// CamelCase become camel_case
 Functions.normalizeFields = (fieldsObject) => {
     let newObject = {};
     Object.keys(fieldsObject).map(function(key, index) {
@@ -77,6 +81,7 @@ Functions.normalizeFields = (fieldsObject) => {
     return newObject;
 }
 
+// Get headers for pagination params and construct pagination object
 Functions.getPaginationOptions = (req) => {
     let correctParams = true;
     let pagination = {};
@@ -97,5 +102,12 @@ Functions.getPaginationOptions = (req) => {
 
     return pagination;
 }
+
+
+// Get full domain
+Functions.getDomain = (req) => {
+    return [req.protocol, '://', req.get('host')].join('');
+}
+
 
 module.exports = Functions;

@@ -3,7 +3,7 @@ let functions = require('../libs/functions'),
 
 exports.test = (req, res, next) => {
 
-    res.sendSuccess(req.headers);
+    res.sendSuccess(functions.getDomain(req));
 
     // return res.sendSuccess({foo: 123});
     // throw new errors.DatabaseError();
