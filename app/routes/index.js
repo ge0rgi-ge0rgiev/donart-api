@@ -85,9 +85,16 @@ const router = require('express').Router()
      * Service ednpoints
      */
 
-            router.post('/services/saveCategory',
+            /**
+             * Save Service Category - Create & Update
+             */
+            router.post('/services/deleteCategory',
                 middlewares.adminOnlyCheck,
-                middlewares.routes.services.saveCategory,
+                [
+                    check('id').exists().withMessage('User ID is required.'),
+                ],
+                middlewares.validatorResult,
+                middlewares.routes.services.deleteCategory,
                 ServiceController.saveCategory
             );
 

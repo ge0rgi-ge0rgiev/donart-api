@@ -9,9 +9,11 @@ let Private = {
     normalizeData: (data) => {
         data = functions.normalizeFields(data);
 
-        if (data.active) {
+        if (data.active !== undefined) {
             data.active = (data.active == "true") ? 1 : 0;
         }
+
+        return data;
     }
 
 };
@@ -29,7 +31,7 @@ ServiceModel.getCategoryById = (categoryId) => {
             let criteria = dbCategories.criteria
                 .where('id').eq(categoryId)
 
-                dbCategories.findSingle(criteria)
+            dbCategories.findSingle(criteria)
                 .then(serviceCategory => resolve(serviceCategory))
                 .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
         });

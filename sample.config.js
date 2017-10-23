@@ -37,7 +37,8 @@ config.database = {
 config.protectedEndpoints = [
     '/users/save',
     '/users/deleteUser',
-    '/services/saveCategory'
+    '/services/saveCategory',
+    '/services/deleteCategory',
 ];
 
 module.exports = config;
