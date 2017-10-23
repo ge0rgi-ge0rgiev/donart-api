@@ -97,3 +97,17 @@ exports.save = (req, res, next) => {
         })
         .catch(err => next(err));
 }
+
+
+/**
+ * Get all users
+ * 
+ */
+exports.getAll = (req, res, next) => {
+    let UserModel = require('../models/UserModel');
+    let pagination = functions.getPaginationOptions(req);
+    UserModel.getUsers(pagination)
+        .then(users => res.sendSuccess(users))
+        .catch(err => next(err));
+}
+

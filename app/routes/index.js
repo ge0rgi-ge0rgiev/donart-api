@@ -59,6 +59,12 @@ const router = require('express').Router()
                 UserController.save
             );
 
+            /**
+             * Save user - Create & Update
+             * 
+             */
+            router.post('/users/getAll', UserController.getAll);
+
 /**
  * For test purporses
  */

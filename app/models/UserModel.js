@@ -30,11 +30,12 @@ let Private = {
         }
 
         if (data.avatar) {
-            user.avatar = data.avatar.split('/').pop();;
+            user.avatar = config.api.avatarRoute + data.avatar.split('/').pop();;
         }
 
         return user;
-    }
+    },
+
 }
 
 let UserModel = {};
@@ -76,6 +77,29 @@ UserModel.getUserById = (userId) => {
         });
     });
 }
+
+/**
+ * Get user by userId
+ * 
+ */
+UserModel.getUsers = (pagination) => {
+    return new Promise((resolve, reject) => {
+        db.ready(function () {
+            let dbUsers = db.table('users');
+            let criteria = dbUsers.criteria
+                .where('active').eq(1);
+
+            if (pagination.all === false) {
+                criteria.limit(pagination.page, pagination.itemsPerPage)
+            }
+
+            dbUsers.find(criteria)
+                .then(user => resolve(user))
+                .catch(err => reject(err));
+        });
+    });
+}
+
 
 
 /**
