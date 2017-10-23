@@ -104,14 +104,10 @@ module.exports = {
              * Validations before user save
              */
             save: (req, res, next) => {
-                let missingFile = false;
                 /**
                  * Update user
                  */
                 if (req.body.id) {
-                    // Avatar check
-                    if (req.file === undefined) missingFile = true;
-
                     // name
                     req.check("name").optional().
                         isLength({min: 3}).withMessage('Invalid name.');
@@ -144,9 +140,6 @@ module.exports = {
                 // Return validation errors
                 if (validationErrors) return next(validationErrors);
                 
-                // Return missing file error
-                if (missingFile) return next(new errors.MissingParameters('Missing avatar image.'));
-
                 next();
             }
 
@@ -158,7 +151,7 @@ module.exports = {
 
             let avatar = path.join(config.api.uploadDir.avatars, req.params.image);
             fs.realpath(avatar, (err, path) => {
-                if (err) return res.sendFile(config.api.uploadDir.defaultAvatar);
+                if (err) return next(new errors.NotFound());
                 res.sendFile(path);
             });
         }

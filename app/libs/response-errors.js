@@ -60,7 +60,7 @@ errors.create({
  */
 errors.create({
     name: 'NotFound',
-    defaultMessage: 'API Not Found.',
+    defaultMessage: 'Not found.',
     code: 5,
     status: 404
 });
