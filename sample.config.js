@@ -17,7 +17,7 @@ config.api.logsDir = path.join(config.api.appRoot, 'logs/');
 config.api.uploadDir = {};
 config.api.uploadDir.main = path.join(config.api.appRoot, 'uploads/');
 config.api.uploadDir.avatars = path.join(config.api.uploadDir.main, 'avatars/');
-
+config.api.uploadDir.defaultAvatar = path.join(config.api.uploadDir.avatars, 'default.png');
 
 // Server configuration
 config.server = {

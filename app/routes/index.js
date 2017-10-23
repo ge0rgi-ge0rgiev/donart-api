@@ -78,6 +78,11 @@ router.post('/test', middlewares.adminOnlyCheck, TestController.test);
 router.post('*', ApiController.notFound);
 
 /**
+ * Avatar request route
+ */
+router.get('/avatar/:image', middlewares.routes.avatar);
+
+/**
  * List of available endpoints
  */
 router.get('/api', (req, res) => res.json({data: 
@@ -87,8 +92,6 @@ router.get('/api', (req, res) => res.json({data:
 /**
  * Restrict the rest get requests
  */
-router.get('*', (req, res) => res.json({data: 
-    "Donart API recieves only POST requests."
-}));
+router.get('*', ApiController.notFound);
 
 module.exports = router;

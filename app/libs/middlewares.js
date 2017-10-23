@@ -150,6 +150,17 @@ module.exports = {
                 next();
             }
 
+        },
+
+        avatar: (req, res, next) => {
+            const fs = require('fs'),
+                path = require('path');
+
+            let avatar = path.join(config.api.uploadDir.avatars, req.params.image);
+            fs.realpath(avatar, (err, path) => {
+                if (err) return res.sendFile(config.api.uploadDir.defaultAvatar);
+                res.sendFile(path);
+            });
         }
     }
 
