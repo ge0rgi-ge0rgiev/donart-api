@@ -88,6 +88,15 @@ const router = require('express').Router()
             /**
              * Save Service Category - Create & Update
              */
+            router.post('/services/saveCategory',
+                middlewares.adminOnlyCheck,
+                middlewares.routes.services.saveCategory,
+                ServiceController.saveCategory
+            );
+
+            /**
+             * Delete Service Category
+             */
             router.post('/services/deleteCategory',
                 middlewares.adminOnlyCheck,
                 [
@@ -96,6 +105,15 @@ const router = require('express').Router()
                 middlewares.validatorResult,
                 middlewares.routes.services.deleteCategory,
                 ServiceController.saveCategory
+            );
+
+            /**
+             * Save Service - Create & Update
+             */
+            router.post('/services/saveService',
+                middlewares.adminOnlyCheck,
+                middlewares.routes.services.saveService,
+                ServiceController.saveService
             );
 
 /**

@@ -6,14 +6,34 @@ const db = require('../libs/database'),
 
 let Private = {
 
-    normalizeData: (data) => {
-        data = functions.normalizeFields(data);
+    normalizeData: {
 
-        if (data.active !== undefined) {
-            data.active = (data.active == "true") ? 1 : 0;
-        }
+        serviceCategory: (data) => {
+            data = functions.normalizeFields(data);
+            
+            if (data.active !== undefined) {
+                data.active = (data.active == "true") ? 1 : 0;
+            }
+    
+            return data;
+        },
 
-        return data;
+        service: (data) => {
+            data = functions.normalizeFields(data);
+            
+            if (data.active !== undefined) {
+                data.active = (data.active == "true") ? 1 : 0;
+            }
+
+            if (data.discountable !== undefined) {
+                data.discountable = (data.discountable == "true") ? 1 : 0;
+            }
+    
+            return data;
+        },
+
+
+        
     }
 
 };
@@ -21,7 +41,7 @@ let Private = {
 let ServiceModel = {};
 
 /**
- * Get user by userId
+ * Get service category by ID
  * 
  */
 ServiceModel.getCategoryById = (categoryId) => {
@@ -39,16 +59,50 @@ ServiceModel.getCategoryById = (categoryId) => {
 }
 
 /**
+ * Get service by ID
+ * 
+ */
+ServiceModel.getServiceById = (serviceId) => {
+    return new Promise((resolve, reject) => {
+        db.ready(function () {
+            let dbServices = db.table('services');
+            let criteria = dbServices.criteria
+                .where('id').eq(serviceId)
+
+            dbServices.findSingle(criteria)
+                .then(service => resolve(service))
+                .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
+        });
+    });
+}
+
+/**
 * Save service category. Used for both create and update.
 * 
 */
 ServiceModel.saveCategory = (serviceCategory) => {
-    serviceCategory = Private.normalizeData(serviceCategory);
+    serviceCategory = Private.normalizeData.serviceCategory(serviceCategory);
     return new Promise((resolve, reject) => {
         db.ready(function () {
             db.table('service_categories').save(serviceCategory)
                 .then(serviceCategory => ServiceModel.getCategoryById(serviceCategory.id))
                 .then(serviceCategory => resolve(serviceCategory))
+                .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
+        });
+    });
+}
+
+/**
+* Save service. Used for both create and update.
+* 
+*/
+ServiceModel.saveService = (service) => {
+    service = Private.normalizeData.service(service);
+    return new Promise((resolve, reject) => {
+        db.ready(function () {
+            db.table('services').save(service)
+                .then(service => ServiceModel.getServiceById(service.id))
+                .then(service => resolve(service))
                 .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
         });
     });

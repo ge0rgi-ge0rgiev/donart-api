@@ -182,6 +182,32 @@ module.exports = {
                 // Make active state - 0
                 req.body.active = 0;
                 next();
+            },
+
+            saveService: (req, res, next) => {
+                if (req.body.id === undefined) {
+                    // service category ID
+                    req.check("serviceCategoryId").exists().withMessage('Required field.');
+
+                    // label
+                    req.check("label").exists().withMessage('Required field.');
+
+                    // price
+                    req.check("price").exists().withMessage('Required field.');
+                }
+
+                // discountable
+                req.check("discountable").optional().isBoolean().withMessage('Must be boolean.');
+
+                // active state
+                req.check("active").optional().isBoolean().withMessage('Must be boolean.');
+
+                var validationErrors = req.validationErrors();
+
+                // Return validation errors
+                if (validationErrors) return next(validationErrors);
+                
+                next();
             }
 
         }
