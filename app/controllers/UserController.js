@@ -87,6 +87,7 @@ exports.save = (req, res, next) => {
         .then((avatar) => {
             // Update the avatar if there`s is file upload
             if (avatar) {
+                res.locals.user.domain = functions.getDomain(req);
                 res.locals.user.avatar = avatar;
                 return UserModel.save(res.locals.user);
             }

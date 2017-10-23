@@ -30,7 +30,7 @@ let Private = {
         }
 
         if (data.avatar) {
-            user.avatar = config.api.avatarRoute + data.avatar.split('/').pop();;
+            user.avatar = [data.domain, config.api.avatarRoute, data.avatar.split('/').pop()].join('');
         }
 
         return user;
