@@ -100,7 +100,7 @@ const router = require('express').Router()
             router.post('/services/deleteCategory',
                 middlewares.adminOnlyCheck,
                 [
-                    check('id').exists().withMessage('User ID is required.'),
+                    check('id').exists().withMessage('ServiceCategory ID is required.'),
                 ],
                 middlewares.validatorResult,
                 middlewares.routes.services.deleteCategory,
@@ -113,6 +113,19 @@ const router = require('express').Router()
             router.post('/services/saveService',
                 middlewares.adminOnlyCheck,
                 middlewares.routes.services.saveService,
+                ServiceController.saveService
+            );
+
+            /**
+             * Delete Service Category
+             */
+            router.post('/services/deleteService',
+                middlewares.adminOnlyCheck,
+                [
+                    check('id').exists().withMessage('Service ID is required.'),
+                ],
+                middlewares.validatorResult,
+                middlewares.routes.services.deleteService,
                 ServiceController.saveService
             );
 
