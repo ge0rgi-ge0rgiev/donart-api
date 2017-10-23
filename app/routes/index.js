@@ -69,7 +69,7 @@ const router = require('express').Router()
  * For test purporses
  */
 // router.post('/test', middlewares.AdminOnlyCheck, TestController.test);
-router.post('/test', middlewares.adminOnlyCheck, TestController.test);
+router.post('/test', TestController.test);
 
 
 /**
