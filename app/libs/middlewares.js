@@ -154,6 +154,24 @@ module.exports = {
                 if (err) return next(new errors.NotFound());
                 res.sendFile(path);
             });
+        },
+
+        services: {
+            
+            saveCategory: (req, res, next) => {
+                // Create action
+                if (req.body.id === undefined) {
+                    req.check("label").exists().withMessage('Required field.');
+                }
+
+                req.check("parentId").optional();
+
+                var validationErrors = req.validationErrors();
+                if (validationErrors) return next(validationErrors);
+                
+                next();
+            }
+
         }
     }
 

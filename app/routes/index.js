@@ -11,6 +11,7 @@ const router = require('express').Router()
 
     ApiController = require('../controllers/ApiController'),
     UserController = require('../controllers/UserController'),
+    ServiceController = require('../controllers/ServiceController'),
     TestController = require('../controllers/TestController');
 
     /**
@@ -64,6 +65,17 @@ const router = require('express').Router()
              * 
              */
             router.post('/users/getAll', UserController.getAll);
+
+    
+    /**
+     * Service ednpoints
+     */
+
+            router.post('/services/saveCategory',
+                middlewares.adminOnlyCheck,
+                middlewares.routes.services.saveCategory,
+                ServiceController.saveCategory
+            );
 
 /**
  * For test purporses

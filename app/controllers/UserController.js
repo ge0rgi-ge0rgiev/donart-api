@@ -1,7 +1,8 @@
 const bcrypt = require('bcrypt'),
     config = require('../../config'),
     functions = require('../libs/functions'),
-    errors = require('../libs/response-errors');
+    errors = require('../libs/response-errors'),
+    UserModel = require('../models/UserModel');
 
 
 /**
@@ -9,7 +10,6 @@ const bcrypt = require('bcrypt'),
  * 
  */
 exports.login = (req, res, next) => {
-    let UserModel = require('../models/UserModel');
     let SessionModel = require('../models/SessionModel');
 
     // Get user object by User ID and hashed Password
@@ -72,8 +72,6 @@ exports.refreshSession = (req, res, next) => {
  * 
  */
 exports.save = (req, res, next) => {
-    let UserModel = require('../models/UserModel');
-
     UserModel.save(req.body)
         .then((user) => {
             res.locals.user = user;
@@ -105,7 +103,6 @@ exports.save = (req, res, next) => {
  * 
  */
 exports.getAll = (req, res, next) => {
-    let UserModel = require('../models/UserModel');
     let pagination = functions.getPaginationOptions(req);
     UserModel.getUsers(pagination)
         .then(users => res.sendSuccess(users))

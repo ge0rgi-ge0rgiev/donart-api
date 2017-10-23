@@ -35,7 +35,8 @@ config.database = {
 
 // Authentication protected endpoints
 config.protectedEndpoints = [
-    '/users/save'
+    '/users/save',
+    '/services/saveCategory'
 ];
 
 module.exports = config;

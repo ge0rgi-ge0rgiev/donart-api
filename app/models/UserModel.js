@@ -95,7 +95,7 @@ UserModel.getUsers = (pagination) => {
 
             dbUsers.find(criteria)
                 .then(user => resolve(user))
-                .catch(err => reject(err));
+                .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
         });
     });
 }
@@ -111,8 +111,9 @@ UserModel.save = (user) => {
     return new Promise((resolve, reject) => {
         db.ready(function () {
             db.table('users').save(user)
+                .then(user => UserModel.getUserById(user.id))
                 .then(user => resolve(user))
-                .catch(err => reject(err));
+                .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
         });
     });
 }
