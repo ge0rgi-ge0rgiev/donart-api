@@ -21,11 +21,11 @@ let Private = {
             user.password = bcrypt.hashSync(data.password, config.api.salt);
         }
 
-        if (data.is_admin) {
+        if (data.is_admin !== undefined) {
             user.is_admin = (data.is_admin == "true") ? 1 : 0;
         }
 
-        if (data.active) {
+        if (data.active !== undefined) {
             user.active = (data.active == "true") ? 1 : 0;
         }
 

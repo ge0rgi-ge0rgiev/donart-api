@@ -59,9 +59,23 @@ const router = require('express').Router()
                 middlewares.routes.users.save,
                 UserController.save
             );
-
+            
             /**
              * Save user - Create & Update
+             * 
+             */
+            router.post('/users/deleteUser',
+                middlewares.adminOnlyCheck,
+                [
+                    check('id').exists().withMessage('User ID is required.'),
+                ],
+                middlewares.validatorResult,
+                middlewares.routes.users.deleteUser,
+                UserController.save
+            );
+
+            /**
+             * Get all users
              * 
              */
             router.post('/users/getAll', UserController.getAll);
