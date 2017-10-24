@@ -129,6 +129,11 @@ const router = require('express').Router()
                 ServiceController.saveService
             );
 
+            /**
+             * Get all services
+             */
+            router.post('/services/getAll',ServiceController.getAll);
+
 /**
  * For test purporses
  */

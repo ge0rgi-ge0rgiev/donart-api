@@ -1,7 +1,7 @@
 const db = require('../libs/database'),
     functions = require('../libs/functions'),
     config = require('../../config');
-    errors = require('../libs/response-errors'),
+errors = require('../libs/response-errors'),
     Promise = require('promise');
 
 let Private = {
@@ -10,17 +10,17 @@ let Private = {
 
         serviceCategory: (data) => {
             data = functions.normalizeFields(data);
-            
+
             if (data.active !== undefined) {
                 data.active = (data.active == "true") ? 1 : 0;
             }
-    
+
             return data;
         },
 
         service: (data) => {
             data = functions.normalizeFields(data);
-            
+
             if (data.active !== undefined) {
                 data.active = (data.active == "true") ? 1 : 0;
             }
@@ -28,12 +28,79 @@ let Private = {
             if (data.discountable !== undefined) {
                 data.discountable = (data.discountable == "true") ? 1 : 0;
             }
-    
+
             return data;
         },
 
+    },
 
-        
+    getCategories: (onlyParent) => {
+        onlyParent = (onlyParent === undefined) ? 'NOT' : '';
+        return new Promise((resolve, reject) => {
+            db.ready(function () {
+                let sql = 'SELECT * FROM `service_categories` WHERE ';
+                sql += '`active` = 1 AND ';
+                sql += '`parent_id` is ' + onlyParent + ' NULL';
+
+                db.query(sql, function (error, results) {
+                    if (error) return reject(error);
+                    resolve(results);
+                });
+            });
+        });
+    },
+
+    getServices: () => {
+        return new Promise((resolve, reject) => {
+            db.ready(function () {
+                let dbServices = db.table('services');
+                let criteria = dbServices.criteria
+                    .where('active').eq(1);
+
+                dbServices.find(criteria)
+                    .then(service => resolve(service))
+                    .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
+            });
+        });
+    },
+
+    constructServiceData: (data) => {
+        // Main categories and Ids
+        let serviceData = data.parentCategories;
+        let mainCatsIds = serviceData.map((category) => category.id);
+
+        // Sub category Ids and Pids
+        let subCategories = data.subCategories;
+        let subCatIds = data.subCategories.map((category) => category.id);
+        let subCatPids = data.subCategories.map((category) => category.parent_id);
+
+        // Category Ids of services
+        let serviceCatIds = data.services.map((category) => category.serviceCategoryId);
+
+        // Add services to categories
+        for (var i in serviceCatIds) {
+            let mainCatIndex = mainCatsIds.indexOf(serviceCatIds[i]);
+            // Add service to main category
+            if (mainCatIndex >= 0) {
+                serviceData[mainCatIndex].services = serviceData[mainCatIndex].services || [];
+                serviceData[mainCatIndex].services.push(data.services[i]);
+            } else {
+                // Add service to sub category
+                let subCatIndex = subCatIds.indexOf(serviceCatIds[i]);
+                if (subCatIndex === -1) continue;
+                subCategories[subCatIndex].services = subCategories[subCatIndex].services || [];
+                subCategories[subCatIndex].services.push(data.services[i]);
+            }
+        }
+
+        // Add sub categories to main categories
+        for (var i in subCatPids) {
+            let serviceIndex = mainCatsIds.indexOf(subCatPids[i]);
+            serviceData[serviceIndex].subCategories = serviceData[serviceIndex].subCategories || [];
+            serviceData[serviceIndex].subCategories.push(subCategories[i]);
+        }
+
+        return serviceData;
     }
 
 };
@@ -107,5 +174,36 @@ ServiceModel.saveService = (service) => {
         });
     });
 }
+
+
+
+
+/**
+* Get service categories and services
+* 
+*/
+ServiceModel.getServices = () => {
+    let data = {};
+    return new Promise((resolve, reject) => {
+        db.ready(function () {
+            Private.getCategories(true)
+                .then((parentCategories) => {
+                    data.parentCategories = parentCategories;
+                    return Private.getCategories();
+                })
+                .then((subCategories) => {
+                    data.subCategories = subCategories;
+                    return Private.getServices();
+                })
+                .then((services) => {
+                    data.services = services;
+                    return Private.constructServiceData(data);
+                })
+                .then(services => resolve(services))
+                .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
+        });
+    });
+}
+
 
 module.exports = ServiceModel;
