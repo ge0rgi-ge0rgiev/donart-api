@@ -182,8 +182,10 @@ CREATE TABLE `service_categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `parent_id` int(11) DEFAULT NULL,
   `label` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `active` tinyint(4) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `service_categories_UN` (`label`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -192,6 +194,7 @@ CREATE TABLE `service_categories` (
 
 LOCK TABLES `service_categories` WRITE;
 /*!40000 ALTER TABLE `service_categories` DISABLE KEYS */;
+INSERT INTO `service_categories` VALUES (1,NULL,'Химическо чистене',1),(14,NULL,'Боядисване',1),(15,1,'Химическо - Костюми',1),(16,1,'Химическо - Якета',1),(17,14,'Боядисване - Обувки',1);
 /*!40000 ALTER TABLE `service_categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -209,10 +212,11 @@ CREATE TABLE `services` (
   `info` text,
   `price` double NOT NULL,
   `discountable` tinyint(1) NOT NULL DEFAULT '0',
+  `active` tinyint(4) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `services_service_categories_FK` (`service_category_id`),
   CONSTRAINT `services_service_categories_FK` FOREIGN KEY (`service_category_id`) REFERENCES `service_categories` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -221,6 +225,7 @@ CREATE TABLE `services` (
 
 LOCK TABLES `services` WRITE;
 /*!40000 ALTER TABLE `services` DISABLE KEYS */;
+INSERT INTO `services` VALUES (1,1,'Панталон',NULL,20,0,1),(2,15,'Смокинг',NULL,20,0,1),(3,17,'Ботуши Мотуши',NULL,15,1,1);
 /*!40000 ALTER TABLE `services` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -240,7 +245,7 @@ CREATE TABLE `session` (
   PRIMARY KEY (`id`),
   KEY `session_users_FK` (`user_id`),
   CONSTRAINT `session_users_FK` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -249,7 +254,7 @@ CREATE TABLE `session` (
 
 LOCK TABLES `session` WRITE;
 /*!40000 ALTER TABLE `session` DISABLE KEYS */;
-INSERT INTO `session` VALUES (3,2,'asdadadadada','asddgff','2017-10-13 16:36:18'),(4,2,'tokeen','dsada','2017-10-14 22:42:16'),(10,1,'4C3PE1IQQOCKJQH0GJ1TJJ98FGWKWGFC54JUT8ZBVGATAMHNYK','192MPL532DA1JZ0PXU3E2MVMGVCCE4NJLRCOUXFJIEMK82835N','2017-10-18 19:51:19');
+INSERT INTO `session` VALUES (3,2,'asdadadadada','asddgff','2017-10-13 16:36:18'),(4,2,'tokeen','dsada','2017-10-14 22:42:16'),(11,1,'3CN79ARTWD9N3ZDSW0STYR5L9FDU77AOIDV97MWWCG10H2CDGB','2HIOZS84GLDBY2456IJIGDYZYA8GLE4M84KJOZ57LNGZS14AJA','2017-10-24 22:55:03');
 /*!40000 ALTER TABLE `session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -345,9 +350,11 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `password` varchar(60) NOT NULL,
-  `is_admin` tinyint(4) NOT NULL,
+  `is_admin` tinyint(4) NOT NULL DEFAULT '0',
+  `active` tinyint(4) NOT NULL DEFAULT '1',
+  `avatar` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -356,7 +363,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'stamat','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0),(2,'georgi','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',1);
+INSERT INTO `users` VALUES (1,'Pafkata','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',1,1,'http://localhost:3000/avatar/user_1.png'),(2,'georgi','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',1,0,NULL),(3,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(4,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(5,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(6,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(7,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(8,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(9,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(10,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(11,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(12,'Stefko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(13,'Petkan','$2a$10$ZzU7rZOTPSagDgR9ltdeHO7sC7sJSRa2D.j1IRqG8w99Pm9HrVVz2',0,0,'http://localhost:3000/avatar/user_13.png'),(14,'Pafkata','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',1,1,NULL),(15,'Pafkata','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',1,1,NULL),(16,'Pafkata','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(17,'Pafkata','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -369,4 +376,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-10-20 23:30:37
+-- Dump completed on 2017-10-24 22:41:33
