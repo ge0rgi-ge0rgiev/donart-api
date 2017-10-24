@@ -62,7 +62,7 @@ module.exports = {
             return this.status(200).json({
                 code: 0,
                 message: "success",
-                data: data
+                data: data || []
             });
         }
         next();
@@ -108,11 +108,8 @@ module.exports = {
                  * Update user
                  */
                 if (req.body.id) {
-                    // name
                     req.check("name").optional().
                         isLength({min: 3}).withMessage('Invalid name.');
-
-                    // password
                     req.check("password").optional()
                         .isLength({min: 3}).withMessage('Invalid name.');
                 } else {
@@ -120,25 +117,19 @@ module.exports = {
                      * Create user
                      */
 
-                     // name
                     req.check("name").exists().withMessage('Required field.')
                         .isLength({min: 3}).withMessage('Invalid name length.');
-
-                    // password
                     req.check("password").exists().withMessage('Required field.')
                         .isLength({min: 3}).withMessage('Invalid password length.');
                 }
 
-                // isAdmin
                 req.check("isAdmin").optional().isBoolean().withMessage('Must be boolean.');
-
-                // active state
                 req.check("active").optional().isBoolean().withMessage('Must be boolean.');
 
                 var validationErrors = req.validationErrors();
 
                 // Return validation errors
-                if (validationErrors) return next(validationErrors);
+                if (validationErrors) return next(functions.formatExpValErrors(validationErrors));
                 
                 next();
             },
@@ -173,7 +164,7 @@ module.exports = {
                 req.check("parentId").optional();
 
                 var validationErrors = req.validationErrors();
-                if (validationErrors) return next(validationErrors);
+                if (validationErrors) return next(functions.formatExpValErrors(validationErrors));
                 
                 next();
             },
@@ -186,26 +177,18 @@ module.exports = {
 
             saveService: (req, res, next) => {
                 if (req.body.id === undefined) {
-                    // service category ID
                     req.check("serviceCategoryId").exists().withMessage('Required field.');
-
-                    // label
                     req.check("label").exists().withMessage('Required field.');
-
-                    // price
                     req.check("price").exists().withMessage('Required field.');
                 }
 
-                // discountable
                 req.check("discountable").optional().isBoolean().withMessage('Must be boolean.');
-
-                // active state
                 req.check("active").optional().isBoolean().withMessage('Must be boolean.');
 
                 var validationErrors = req.validationErrors();
 
                 // Return validation errors
-                if (validationErrors) return next(validationErrors);
+                if (validationErrors) return next(functions.formatExpValErrors(validationErrors));
                 
                 next();
             },
@@ -216,6 +199,51 @@ module.exports = {
                 next();
             },
 
+        },
+
+        site: {
+            
+            createOrder: (req, res, next) => {
+                // Required fields for fast type order
+                req.check("firstName").exists().withMessage('Required field.');
+                req.check("lastName").exists().withMessage('Required field.');
+                req.check("phone").exists().withMessage('Required field.');
+                req.check("pickDate").exists().withMessage('Required field.');
+                req.check("timeFrom").exists().withMessage('Required field.');
+                req.check("timeTo").exists().withMessage('Required field.');
+                req.check("type").exists().withMessage('Required field.');
+
+                // Check for order type 
+                if (['fast', 'normal'].indexOf(req.body.type) === -1)
+                    throw new errors.InvalidParameters('Order type can be only fast or normal.');
+
+                // Validations for normal type order
+                if (req.body.type !== undefined && req.body.type == 'normal') {
+                    req.check("totalAmount").exists().withMessage('Required field.');
+
+                    // Check for order products
+                    if (req.body.products === undefined)
+                        throw new errors.InvalidParameters('Missing order products.');
+
+                    // Check for valid order product fields
+                    let err = false;
+                    for (var i in req.body.products) {
+                        if (req.body.products[i]['serviceId'] === undefined) err = true; break;
+                        if (req.body.products[i]['count'] === undefined) err = true; break;
+                        if (req.body.products[i]['totalAmount'] === undefined) err = true; break;
+                    }
+
+                    if (err === true)
+                        throw new errors.InvalidParameters('Invalid order products fields.');
+                }
+
+                var validationErrors = req.validationErrors();
+                
+                // Return validation errors
+                if (validationErrors) return next(functions.formatExpValErrors(validationErrors));
+                
+                next();
+            }
         }
     }
 

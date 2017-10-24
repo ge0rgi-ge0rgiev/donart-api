@@ -12,6 +12,7 @@ const router = require('express').Router()
     ApiController = require('../controllers/ApiController'),
     UserController = require('../controllers/UserController'),
     ServiceController = require('../controllers/ServiceController'),
+    SiteOrderController = require('../controllers/SiteOrderController'),
     TestController = require('../controllers/TestController');
 
     /**
@@ -134,6 +135,19 @@ const router = require('express').Router()
              */
             router.post('/services/getAll',ServiceController.getAll);
 
+
+    /**
+     * Site order endpoints
+     */
+
+
+            /**
+             * Create site order
+             */
+            router.post('/site/createOrder',
+                middlewares.routes.site.createOrder,
+                SiteOrderController.createOrder
+            );
 /**
  * For test purporses
  */

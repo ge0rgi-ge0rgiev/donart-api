@@ -254,8 +254,75 @@ CREATE TABLE `session` (
 
 LOCK TABLES `session` WRITE;
 /*!40000 ALTER TABLE `session` DISABLE KEYS */;
-INSERT INTO `session` VALUES (3,2,'asdadadadada','asddgff','2017-10-13 16:36:18'),(4,2,'tokeen','dsada','2017-10-14 22:42:16'),(11,1,'3CN79ARTWD9N3ZDSW0STYR5L9FDU77AOIDV97MWWCG10H2CDGB','2HIOZS84GLDBY2456IJIGDYZYA8GLE4M84KJOZ57LNGZS14AJA','2017-10-24 22:55:03');
+INSERT INTO `session` VALUES (3,2,'asdadadadada','asddgff','2017-10-13 16:36:18'),(4,2,'tokeen','dsada','2017-10-14 22:42:16'),(11,1,'3CN79ARTWD9N3ZDSW0STYR5L9FDU77AOIDV97MWWCG10H2CDGB','2HIOZS84GLDBY2456IJIGDYZYA8GLE4M84KJOZ57LNGZS14AJA','2017-10-25 00:39:44');
 /*!40000 ALTER TABLE `session` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `site_order_products`
+--
+
+DROP TABLE IF EXISTS `site_order_products`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `site_order_products` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) NOT NULL,
+  `service_id` int(11) NOT NULL,
+  `count` int(11) DEFAULT NULL,
+  `total_amount` double NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `site_order_products_site_orders_FK` (`order_id`),
+  KEY `site_order_products_services_FK` (`service_id`),
+  CONSTRAINT `site_order_products_services_FK` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`),
+  CONSTRAINT `site_order_products_site_orders_FK` FOREIGN KEY (`order_id`) REFERENCES `site_orders` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `site_order_products`
+--
+
+LOCK TABLES `site_order_products` WRITE;
+/*!40000 ALTER TABLE `site_order_products` DISABLE KEYS */;
+INSERT INTO `site_order_products` VALUES (24,27,2,10,20),(25,27,3,103,210),(26,27,1,15,290);
+/*!40000 ALTER TABLE `site_order_products` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `site_orders`
+--
+
+DROP TABLE IF EXISTS `site_orders`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `site_orders` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(20) NOT NULL,
+  `last_name` varchar(20) NOT NULL,
+  `email` varchar(30) DEFAULT NULL,
+  `phone` varchar(20) NOT NULL,
+  `additional_info` varchar(255) DEFAULT NULL,
+  `address` varchar(100) NOT NULL,
+  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `pick_date` datetime NOT NULL,
+  `time_from` datetime NOT NULL,
+  `time_to` datetime NOT NULL,
+  `status` enum('pending','finished') NOT NULL DEFAULT 'pending',
+  `type` enum('fast','normal') NOT NULL,
+  `total_amount` double DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `site_orders`
+--
+
+LOCK TABLES `site_orders` WRITE;
+/*!40000 ALTER TABLE `site_orders` DISABLE KEYS */;
+INSERT INTO `site_orders` VALUES (26,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-10-25 02:00:27','2017-10-24 23:26:44','2017-10-24 23:26:44','2017-10-24 23:26:44','pending','fast',NULL),(27,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-10-25 02:00:39','2017-10-25 02:01:57','2017-10-25 02:01:57','2017-10-25 02:01:57','pending','normal',100);
+/*!40000 ALTER TABLE `site_orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -376,4 +443,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-10-24 22:41:33
+-- Dump completed on 2017-10-25  2:04:26

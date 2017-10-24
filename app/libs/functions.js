@@ -103,10 +103,17 @@ Functions.getPaginationOptions = (req) => {
     return pagination;
 }
 
-
 // Get full domain
 Functions.getDomain = (req) => {
     return [req.protocol, '://', req.get('host')].join('');
+}
+
+Functions.formatExpValErrors = (_errors) => {
+    let errMessage = 'Express validator: ';
+    for (var i in _errors) {
+        errMessage += _errors[i].param + ': ' + _errors[i].msg + '; ';
+    }
+    return new errors.InvalidParameters(errMessage);
 }
 
 
