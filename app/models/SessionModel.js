@@ -34,7 +34,10 @@ SessionModel.getSessionData = (params) => {
             let criteria = Private.getCriteriaObject(params);
             db.table('session').findSingle(criteria)
                 .then(session => resolve(session))
-                .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
+                .catch((err) => {
+                    functions.logError(err);
+                    reject(new errors.DatabaseError(err.sqlMessage));
+                });
         });
     });
 }
@@ -49,7 +52,10 @@ SessionModel.saveSession = (session) => {
         db.ready(function () {
             db.table('session').save(session)
                 .then(result => resolve(result))
-                .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
+                .catch((err) => {
+                    functions.logError(err);
+                    reject(new errors.DatabaseError(err.sqlMessage));
+                });
         });
     });
 }
@@ -80,7 +86,10 @@ SessionModel.getSessionByAuthToken = (req, res) => {
 
                 resolve(session);
             })
-            .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
+            .catch((err) => {
+                functions.logError(err);
+                reject(new errors.DatabaseError(err.sqlMessage));
+            });
     });
 }
 
@@ -94,7 +103,10 @@ SessionModel.updateExpirationTime = (session) => {
         session.expiration = functions.getDateObject(config.api.sessionDuration);
         SessionModel.saveSession(session)
             .then(session => resolve(session))
-            .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
+            .catch((err) => {
+                functions.logError(err);
+                reject(new errors.DatabaseError(err.sqlMessage));
+            });
     });
 }
 

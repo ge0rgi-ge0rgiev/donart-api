@@ -70,8 +70,8 @@ module.exports = {
 
     // HTTP error response handler
     errorHandler: (err, req, res, next) => {
-        let genericErrors = ['EvalError', 'RangeError', 'ReferenceError', 'SyntaxError', 'TypeError', 'URIError'];
-        if (genericErrors.indexOf(err.name) > -1) {
+        if (errors.JS_ERRORS[err.name]) {
+            functions.logError(err);
             let errors = require('./response-errors');
             err = new errors.ServerError(err.message);
         }

@@ -10,3 +10,10 @@ exports.createOrder = (req, res, next) => {
         .catch(err => next(err));
 }
 
+exports.getOrders = (req, res, next) => {
+    let pagination = functions.getPaginationOptions(req);
+    SiteOrderModel.getOrders(pagination)
+        .then(order => res.sendSuccess(order))
+        .catch(err => next(err));
+}
+

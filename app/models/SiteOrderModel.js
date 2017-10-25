@@ -54,7 +54,35 @@ let Private = {
             )
         )
         .then(products)
-        .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
+        .catch((err) => { throw err });
+    },
+
+    /**
+     * Get orders products
+     */
+    getOrdersProducts: (orders) => {
+        return Promise.all(
+                orders.map(order => new Promise((resolve, reject) => {
+                    db.ready(function () {
+                        let dbOrderProducts = db.table('site_order_products');
+                        let criteria = dbOrderProducts.criteria
+                            .where('order_id').eq(order.id);
+
+                        dbOrderProducts.find(criteria)
+                            .then(products => resolve(products))
+                            .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
+                    });
+                })
+            )
+        )
+        .then((products) => {
+            for (var i in orders) {
+                if (products[i].length > 0) 
+                    orders[i].products = products[i];
+            }
+            return orders;
+        })
+        .catch((err) => { throw err });
     }
 
 }
@@ -83,14 +111,39 @@ SiteOrderModel.save = (order) => {
                 if (products !== null) returnOrderData.products = products;
                 resolve(returnOrderData);
             })
-            // .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
             .catch((err) => {
-                console.log(err);
+                functions.logError(err);
+                reject(new errors.DatabaseError(err.sqlMessage));
             });
             
     });
 }
 
+
+/**
+ * Get orders and products
+ * 
+ */
+SiteOrderModel.getOrderss = (pagination) => {
+    return new Promise((resolve, reject) => {
+        db.ready(function () {
+            let dbOrders = db.table('site_orders');
+            let criteria = dbOrders.criteria
+
+            if (pagination.all === false) {
+                criteria.limit(pagination.offset, pagination.start);
+            }
+
+            dbOrders.find(criteria)
+                .then((orders) => { return Private.getOrdersProducts(orders) })
+                .then(orders => resolve(orders))
+                .catch((err) => {
+                    functions.logError(err);
+                    reject(new errors.DatabaseError(err.sqlMessage));
+                });
+        });
+    });
+}
 
 
 module.exports = SiteOrderModel;

@@ -40,8 +40,8 @@ Functions.requestLogger = () => {
 
 };
 
-// Log the error data in log file
-Functions.errorLogger = () => {
+// Log the error data in log file - Middleware for server.js
+Functions.errorLoggerMiddleware = () => {
     const expressWinston = require('winston-express-middleware'),
         winston = require('winston');
     return expressWinston.errorLogger({
@@ -49,11 +49,30 @@ Functions.errorLogger = () => {
             new winston.transports.File({
                 label: "Donart API erros",
                 filename: config.api.logsDir + 'errors.log',
+                level: 'debug',
                 maxsize: 2000000,
                 eol: "\n\n",
             })
         ]
     });
+}
+
+Functions.logError = (err, req) => {
+    const winston = require('winston');
+
+    let logger = new winston.Logger ({
+        transports: [
+            new winston.transports.File({
+                label: "Donart API erros",
+                filename: config.api.logsDir + 'errors.log',
+                maxsize: 2000000,
+                level: 'debug',
+                eol: "\n\n",
+            })
+        ]
+     });
+     
+     logger.error(err);
 }
 
 // Move file from tmp to given destination
@@ -87,20 +106,24 @@ Functions.getPaginationOptions = (req) => {
     let pagination = {};
 
     // Current page
-    pagination.page = (req.headers['x-pagination-page']) ? req.headers['x-pagination-page'] : 1;
+    let page = (req.headers['x-pagination-page']) ? req.headers['x-pagination-page'] : 1;
 
     // Items per page
-    pagination.itemsPerPage = (req.headers['x-pagination-items']) ? (req.headers['x-pagination-items']) : config.api.paginationItems;
+    let itemsPerPage = (req.headers['x-pagination-items']) ? (req.headers['x-pagination-items']) : config.api.paginationItems;
 
     // Ignore pagination settings and return all items
-    pagination.all = (req.headers['x-pagination-all']) ? true : false;
+    let getAll = (req.headers['x-pagination-all']) ? true : false;
 
-    if (pagination.page != Math.abs(pagination.page)) correctParams = false;
-    if (pagination.itemsPerPage != Math.abs(pagination.itemsPerPage)) correctParams = false;
+    if (page != Math.abs(page)) correctParams = false;
+    if (itemsPerPage != Math.abs(itemsPerPage)) correctParams = false;
 
     if (correctParams === false) throw new errors.InvalidParameters('Invalid pagination params.');
 
-    return pagination;
+    return {
+        all: getAll,
+        start: (page > 1) ? (page * itemsPerPage) : 0,
+        offset: itemsPerPage 
+    }
 }
 
 // Get full domain

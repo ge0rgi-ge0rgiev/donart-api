@@ -148,6 +148,11 @@ const router = require('express').Router()
                 middlewares.routes.site.createOrder,
                 SiteOrderController.createOrder
             );
+        
+            /**
+             * Get all site orders
+             */
+            router.post('/site/getOrders', SiteOrderController.getOrders);
 /**
  * For test purporses
  */

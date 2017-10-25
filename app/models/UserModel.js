@@ -54,7 +54,10 @@ UserModel.getUserByCredentials = (userId, password) => {
 
             dbUsers.findSingle(criteria)
                 .then(user => resolve(user))
-                .catch(err => reject(err));
+                .catch((err) => {
+                    functions.logError(err);
+                    reject(new errors.DatabaseError(err.sqlMessage));
+                });
         });
     });
 }
@@ -73,7 +76,10 @@ UserModel.getUserById = (userId) => {
 
             dbUsers.findSingle(criteria)
                 .then(user => resolve(user))
-                .catch(err => reject(err));
+                .catch((err) => {
+                    functions.logError(err);
+                    reject(new errors.DatabaseError(err.sqlMessage));
+                });
         });
     });
 }
@@ -90,12 +96,15 @@ UserModel.getUsers = (pagination) => {
                 .where('active').eq(1);
 
             if (pagination.all === false) {
-                criteria.limit(pagination.page, pagination.itemsPerPage)
+                criteria.limit(pagination.offset, pagination.start);
             }
 
             dbUsers.find(criteria)
                 .then(user => resolve(user))
-                .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
+                .catch((err) => {
+                    functions.logError(err);
+                    reject(new errors.DatabaseError(err.sqlMessage));
+                });
         });
     });
 }
@@ -113,7 +122,10 @@ UserModel.save = (user) => {
             db.table('users').save(user)
                 .then(user => UserModel.getUserById(user.id))
                 .then(user => resolve(user))
-                .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
+                .catch((err) => {
+                    functions.logError(err);
+                    reject(new errors.DatabaseError(err.sqlMessage));
+                });
         });
     });
 }

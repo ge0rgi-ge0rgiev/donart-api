@@ -59,7 +59,7 @@ let Private = {
 
                 dbServices.find(criteria)
                     .then(service => resolve(service))
-                    .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
+                    .catch(err => reject(err));
             });
         });
     },
@@ -120,7 +120,10 @@ ServiceModel.getCategoryById = (categoryId) => {
 
             dbCategories.findSingle(criteria)
                 .then(serviceCategory => resolve(serviceCategory))
-                .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
+                .catch((err) => {
+                    functions.logError(err);
+                    reject(new errors.DatabaseError(err.sqlMessage));
+                });
         });
     });
 }
@@ -138,7 +141,10 @@ ServiceModel.getServiceById = (serviceId) => {
 
             dbServices.findSingle(criteria)
                 .then(service => resolve(service))
-                .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
+                .catch((err) => {
+                    functions.logError(err);
+                    reject(new errors.DatabaseError(err.sqlMessage));
+                });
         });
     });
 }
@@ -154,7 +160,10 @@ ServiceModel.saveCategory = (serviceCategory) => {
             db.table('service_categories').save(serviceCategory)
                 .then(serviceCategory => ServiceModel.getCategoryById(serviceCategory.id))
                 .then(serviceCategory => resolve(serviceCategory))
-                .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
+                .catch((err) => {
+                    functions.logError(err);
+                    reject(new errors.DatabaseError(err.sqlMessage));
+                });
         });
     });
 }
@@ -170,7 +179,10 @@ ServiceModel.saveService = (service) => {
             db.table('services').save(service)
                 .then(service => ServiceModel.getServiceById(service.id))
                 .then(service => resolve(service))
-                .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
+                .catch((err) => {
+                    functions.logError(err);
+                    reject(new errors.DatabaseError(err.sqlMessage));
+                });
         });
     });
 }
@@ -200,7 +212,10 @@ ServiceModel.getServices = () => {
                     return Private.constructServiceData(data);
                 })
                 .then(services => resolve(services))
-                .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
+                .catch((err) => {
+                    functions.logError(err);
+                    reject(new errors.DatabaseError(err.sqlMessage));
+                });
         });
     });
 }
