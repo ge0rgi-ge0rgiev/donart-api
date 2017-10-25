@@ -31,7 +31,7 @@ app.use( middlewares.httpSuccess );
 app.use( router );
 
 // Error Logger
-app.use(functions.errorLogger());
+app.use(functions.errorLoggerMiddleware());
 
 // Error Handler
 app.use( middlewares.errorHandler );

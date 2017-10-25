@@ -153,6 +153,14 @@ const router = require('express').Router()
              * Get all site orders
              */
             router.post('/site/getOrders', SiteOrderController.getOrders);
+
+            /**
+             * Change order status
+             */
+            router.post('/site/changeOrderStatus',
+                middlewares.routes.site.changeOrderStatus,
+                SiteOrderController.changeOrderStatus
+            );
 /**
  * For test purporses
  */

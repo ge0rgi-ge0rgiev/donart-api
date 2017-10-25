@@ -17,3 +17,15 @@ exports.getOrders = (req, res, next) => {
         .catch(err => next(err));
 }
 
+exports.changeOrderStatus = (req, res, next) => {
+    SiteOrderModel.getOrderById(req.body.id)
+        .then((order) => {
+            if (order === undefined)
+                throw errors.InvalidParameters('Invalid order id');
+            order.status = req.body.status;
+            return SiteOrderModel.save(req.body);     
+        })
+        .then(order => res.sendSuccess(order))
+        .catch(err => next(err));
+}
+

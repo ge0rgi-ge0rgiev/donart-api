@@ -6,6 +6,11 @@ let db = require('../libs/database'),
 let Private = {
 
     normalizeData: (order) => {
+        // changeOrderStatus (update)
+        if (order.id) return {
+            order: order
+        };
+
         order.pickDate = new Date(order.pickDate);
         order.timeFrom = new Date(order.timeFrom);
         order.timeTo = new Date(order.timeTo);
@@ -83,11 +88,36 @@ let Private = {
             return orders;
         })
         .catch((err) => { throw err });
-    }
+    },
+
+    
+
+
 
 }
 
 let SiteOrderModel = {};
+
+/**
+ * Get user by userId
+ * 
+ */
+SiteOrderModel.getOrderById = (orderId) => {
+    return new Promise((resolve, reject) => {
+        db.ready(function () {
+            let dbOrders = db.table('site_orders');
+            let criteria = dbOrders.criteria
+                .where('id').eq(orderId)
+
+            dbOrders.findSingle(criteria)
+                .then(order => resolve(order))
+                .catch((err) => {
+                    functions.logError(err);
+                    reject(new errors.DatabaseError(err.sqlMessage));
+                });
+        });
+    });
+}
 
 /**
  * Save order - Order & Products
@@ -97,6 +127,7 @@ SiteOrderModel.save = (order) => {
     return new Promise((resolve, reject) => {
         let returnOrderData;
         Private.saveOrder(orderData.order)
+            .then((order) => { return SiteOrderModel.getOrderById(order.id) })
             .then((order) => {
                 returnOrderData = order;
                 if (orderData.products !== undefined) {
@@ -124,7 +155,7 @@ SiteOrderModel.save = (order) => {
  * Get orders and products
  * 
  */
-SiteOrderModel.getOrderss = (pagination) => {
+SiteOrderModel.getOrders = (pagination) => {
     return new Promise((resolve, reject) => {
         db.ready(function () {
             let dbOrders = db.table('site_orders');
@@ -144,6 +175,7 @@ SiteOrderModel.getOrderss = (pagination) => {
         });
     });
 }
+
 
 
 module.exports = SiteOrderModel;
