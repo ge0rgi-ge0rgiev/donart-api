@@ -48,10 +48,9 @@ Functions.errorLoggerMiddleware = () => {
         transports: [
             new winston.transports.File({
                 label: "Donart API erros",
-                filename: config.api.logsDir + 'errors.log',
+                filename: config.api.logsDir + 'errors.json',
                 level: 'debug',
-                maxsize: 2000000,
-                eol: "\n\n",
+                maxsize: 2000000
             })
         ]
     });
@@ -64,10 +63,9 @@ Functions.logError = (err, req) => {
         transports: [
             new winston.transports.File({
                 label: "Donart API erros",
-                filename: config.api.logsDir + 'errors.log',
+                filename: config.api.logsDir + 'errors.json',
                 maxsize: 2000000,
-                level: 'debug',
-                eol: "\n\n",
+                level: 'debug'
             })
         ]
      });

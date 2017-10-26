@@ -1,11 +1,12 @@
 const express = require('express'),
     timeout = require('connect-timeout'),
+    winston = require('winston'),
     config = require('./config'), // App configuration
     middlewares = require('./app/libs/middlewares'), // Middleware functions
     bodyParser = require('body-parser'),
     router = require('./app/routes'), // The endpoint router
     functions = require('./app/libs/functions'),
-    validator = require('express-validator'),
+    expressValidator = require('express-validator'),
     app = express();
 
 // Set response timeout to X seconds
@@ -15,8 +16,20 @@ app.use( timeout('20s') );
 app.use( bodyParser.urlencoded({ extended: true }) );
 app.use( bodyParser.json() );
 
+// Read error log route
+require('winston-logs-display')(app, 
+    new (winston.Logger)({
+        transports: [
+            new (winston.transports.File)({
+                json: false,
+                filename: 'logs/errors.log'
+            })
+        ]
+    })
+);
+
 // Use express-validator
-app.use( validator() );
+app.use( expressValidator() );
 
 // API Token Authentication
 app.use( middlewares.authMiddleware );
