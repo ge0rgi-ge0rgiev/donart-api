@@ -100,7 +100,8 @@ UserModel.getUsers = (pagination) => {
             }
 
             dbUsers.find(criteria)
-                .then(user => resolve(user))
+                .then(users => functions.intToBoolFieldValues(users, ['active', 'isAdmin']))
+                .then(users => resolve(users))
                 .catch((err) => {
                     functions.logError(err);
                     reject(new errors.DatabaseError(err.sqlMessage));

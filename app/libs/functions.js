@@ -137,5 +137,26 @@ Functions.formatExpValErrors = (_errors) => {
     return new errors.InvalidParameters(errMessage);
 }
 
+Functions.intToBoolFieldValues = (data, fields) => {
+    // Loop data indexes
+    for (let index in data) {
+        // Loop index data fields
+        for (let objField in data[index]) {
+            // Loop the given matched fields
+            for (let fieldIndex in fields) {
+                if (objField == fields[fieldIndex]) {
+                    data[index][objField] =  (data[index][objField] == 1) ? true : false;
+                }
+            }
+            
+            if (typeof data[index][objField] === 'object') {
+                Functions.intToBoolFieldValues(data[index][objField], fields);
+            } 
+        }
+    }
+
+    return data;
+}
+
 
 module.exports = Functions;
