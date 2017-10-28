@@ -153,4 +153,59 @@ ClientModel.deleteAddress = (addressId) => {
     });
 }
 
+/**
+ * Get clients by filter
+ * 
+ */
+ClientModel.getClients = (params) => {
+    return new Promise((resolve, reject) => {
+        db.ready(function () {
+            let sql = 'SELECT * FROM `clients` WHERE ';
+            sql += '`active` = 1 AND ';
+            let whereSql = '';
+
+            let filter = params.filter;
+            let pagination = params.pagination;
+
+            if (filter.name && filter.name.length > 0) {
+                let fullName = filter.name.split(' ');
+                whereSql += ['`first_name` = "', fullName[0], '"'].join('');
+                if (fullName.length > 0)
+                    if (whereSql.length != 0) whereSql += ' OR ';
+                    whereSql += ['`last_name` = "', fullName[1], '"'].join('');
+            }
+
+            if (filter.phone && filter.phone.length > 0) {
+                if (whereSql.length != 0) whereSql += ' OR ';
+                whereSql += ['`phone` = "', filter.phone, '"'].join('');
+            }
+
+            if (whereSql.length === 0) whereSql = '1';
+
+            sql += whereSql;
+
+            if (pagination.all === false) {
+                sql += [' LIMIT ', pagination.start, ',', pagination.offset, ';'].join('');
+            }
+
+            db.query(sql, function (error, clients) {
+                if (error) return reject(error);
+                if (clients.length === 0) return resolve();
+                return Promise.all(
+                    clients.map(client => 
+                        Private.getClientById(client.id)
+                    )
+                )
+                .then(clients => resolve(clients))
+                .catch((err) => { throw err });
+            });
+        });
+    });
+}
+
+
+
+
+
+
 module.exports = ClientModel;

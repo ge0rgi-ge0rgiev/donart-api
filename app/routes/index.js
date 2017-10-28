@@ -198,6 +198,11 @@ const router = require('express').Router()
                 middlewares.validatorResult,
                 ClientController.deleteAddress
             );
+
+            /**
+             * Get clients by filter
+             */
+            router.post('/clients/filter', ClientController.filter);
 /**
  * For test purporses
  */

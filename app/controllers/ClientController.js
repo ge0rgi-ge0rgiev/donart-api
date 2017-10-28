@@ -53,3 +53,27 @@ exports.addAddress = (req, res, next) => {
         .catch(err => next(err));
 }
 
+/**
+ * Delete client address
+ * 
+ */
+exports.deleteAddress = (req, res, next) => {
+    ClientModel.deleteAddress(req.body.id)
+        .then(status => res.sendSuccess(status))
+        .catch(err => next(err));
+}
+
+/**
+ * Get clients by filter
+ * 
+ */
+exports.filter = (req, res, next) => {
+    let pagination = functions.getPaginationOptions(req);
+    ClientModel.getClients({
+        filter: req.body,
+        pagination: pagination
+    })
+    .then(clients => res.sendSuccess(clients))
+    .catch(err => next(err));
+}
+

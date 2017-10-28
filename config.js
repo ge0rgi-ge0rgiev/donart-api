@@ -25,18 +25,18 @@ config.server = {
 };
 
 // Database configuration
-// config.database = {
-//     host: 'localhost',
-//     user: 'root',
-//     password: 'root',
-//     database: 'donart'
-// };
 config.database = {
-    host: 'wyqk6x041tfxg39e.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
-    user: 'qhdku9ijnr5wh69x',
-    password: 'kbq0bmk9fdj6t1db',
-    database: 'm0tj889wu2exupdm'
+    host: 'localhost',
+    user: 'root',
+    password: 'root',
+    database: 'donart'
 };
+// config.database = {
+//     host: 'wyqk6x041tfxg39e.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
+//     user: 'qhdku9ijnr5wh69x',
+//     password: 'kbq0bmk9fdj6t1db',
+//     database: 'm0tj889wu2exupdm'
+// };
 
 // Authentication protected endpoints
 config.protectedEndpoints = [
@@ -50,6 +50,8 @@ config.protectedEndpoints = [
     '/clients/save',
     '/clients/addAddress',
     '/clients/deleteAddress',
+    '/clients/filter',
+    
 ];
 
 module.exports = config;
