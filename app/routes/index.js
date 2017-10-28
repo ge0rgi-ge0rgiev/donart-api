@@ -175,6 +175,18 @@ const router = require('express').Router()
                 middlewares.routes.clients.save,
                 ClientController.save
             );
+
+            /**
+             * Save client for both Create and Update
+             */
+            router.post('/clients/addAddress',
+                [
+                    check('address').exists().withMessage('Address is required.'),
+                    check('clientId').exists().withMessage('Client ID is required.'),
+                ],
+                middlewares.validatorResult,
+                ClientController.addAddress
+            );
 /**
  * For test purporses
  */

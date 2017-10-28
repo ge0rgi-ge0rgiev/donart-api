@@ -113,4 +113,22 @@ ClientModel.save = (clientData) => {
     });
 }
 
+/**
+ * Save client. Both create and update.
+ * 
+ */
+ClientModel.addAddress = (address) => {
+    return new Promise((resolve, reject) => {
+        Private.saveAddresses([address.address], address.clientId)
+            .then(address => {
+                address = address.pop();
+                resolve(Private.getClientById(address.clientId))
+            })
+            .catch((err) => {
+                functions.logError(err);
+                reject(new errors.DatabaseError(err.sqlMessage));
+            });
+    });
+}
+
 module.exports = ClientModel;

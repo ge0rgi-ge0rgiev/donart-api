@@ -39,21 +39,17 @@ exports.save = (req, res, next) => {
             let data = (client) ? client : res.locals.client;
             res.sendSuccess(data);
         })
-        .catch(err => {
-            console.log(err);
-        });
-        // .catch(err => next(err));
+        .catch(err => next(err));
 }
 
 
-// /**
-//  * Get all users
-//  * 
-//  */
-// exports.getAll = (req, res, next) => {
-//     let pagination = functions.getPaginationOptions(req);
-//     UserModel.getUsers(pagination)
-//         .then(users => res.sendSuccess(users))
-//         .catch(err => next(err));
-// }
+/**
+ * Add client address
+ * 
+ */
+exports.addAddress = (req, res, next) => {
+    ClientModel.addAddress(req.body)
+        .then(client => res.sendSuccess(client))
+        .catch(err => next(err));
+}
 
