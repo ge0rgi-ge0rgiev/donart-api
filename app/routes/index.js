@@ -187,6 +187,17 @@ const router = require('express').Router()
                 middlewares.validatorResult,
                 ClientController.addAddress
             );
+
+            /**
+             * Save client for both Create and Update
+             */
+            router.post('/clients/deleteAddress',
+                [
+                    check('id').exists().withMessage('ID is required.'),
+                ],
+                middlewares.validatorResult,
+                ClientController.deleteAddress
+            );
 /**
  * For test purporses
  */

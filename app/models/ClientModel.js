@@ -114,7 +114,7 @@ ClientModel.save = (clientData) => {
 }
 
 /**
- * Save client. Both create and update.
+ * Add client address
  * 
  */
 ClientModel.addAddress = (address) => {
@@ -128,6 +128,28 @@ ClientModel.addAddress = (address) => {
                 functions.logError(err);
                 reject(new errors.DatabaseError(err.sqlMessage));
             });
+    });
+}
+
+/**
+ * Delete client address
+ * 
+ */
+ClientModel.deleteAddress = (addressId) => {
+    return new Promise((resolve, reject) => {
+        db.ready(function () {
+            db.table('client_addresses').remove(addressId)
+                .then(result => {
+                    if (result.affectedRows === 1) {
+                        return resolve(true);
+                    }
+                    resolve(false);
+                })
+                .catch((err) => {
+                    functions.logError(err);
+                    reject(new errors.DatabaseError(err.sqlMessage));
+                });
+        });
     });
 }
 
