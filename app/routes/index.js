@@ -13,6 +13,7 @@ const router = require('express').Router()
     UserController = require('../controllers/UserController'),
     ServiceController = require('../controllers/ServiceController'),
     SiteOrderController = require('../controllers/SiteOrderController'),
+    ClientController = require('../controllers/ClientController'),
     TestController = require('../controllers/TestController');
 
     /**
@@ -160,6 +161,19 @@ const router = require('express').Router()
             router.post('/site/changeOrderStatus',
                 middlewares.routes.site.changeOrderStatus,
                 SiteOrderController.changeOrderStatus
+            );
+
+    /**
+     * Clients ednpoints
+     */
+
+            /**
+             * Save client for both Create and Update
+             */
+            router.post('/clients/save',
+                upload.single('avatar'),
+                middlewares.routes.clients.save,
+                ClientController.save
             );
 /**
  * For test purporses

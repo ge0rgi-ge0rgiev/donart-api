@@ -260,6 +260,36 @@ module.exports = {
 
                 next();
             }
+        },
+
+        clients: {
+
+            /**
+             * Validations before client save
+             */
+            save: (req, res, next) => {
+                if (req.body.id === undefined) {
+                    req.check("firstName").exists().withMessage('Required field.')
+                    req.check("lastName").exists().withMessage('Required field.')
+                    req.check("phone").exists().withMessage('Required field.')
+                    req.check("userId").exists().withMessage('Required field.')
+                }
+
+                var validationErrors = req.validationErrors();
+
+                // Return validation errors
+                if (validationErrors) return next(functions.formatExpValErrors(validationErrors));
+
+                let addresses = req.body.addresses || [];
+                delete req.body.addresses;
+
+                req.body = {
+                    client: req.body,
+                    addresses: addresses
+                }
+
+                next();
+            },
         }
     }
 

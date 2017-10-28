@@ -22,7 +22,7 @@ require('winston-logs-display')(app,
         transports: [
             new (winston.transports.File)({
                 json: false,
-                filename: 'logs/errors.log'
+                filename: 'logs/errors.json'
             })
         ]
     })

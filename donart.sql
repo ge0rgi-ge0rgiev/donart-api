@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.19, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.20, for Linux (x86_64)
 --
 -- Host: localhost    Database: donart
 -- ------------------------------------------------------
--- Server version	5.7.19-0ubuntu0.16.04.1
+-- Server version	5.7.20-0ubuntu0.16.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -29,7 +29,7 @@ CREATE TABLE `client_addresses` (
   PRIMARY KEY (`id`),
   KEY `user_addresses_clients_FK` (`client_id`),
   CONSTRAINT `user_addresses_clients_FK` FOREIGN KEY (`client_id`) REFERENCES `clients` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -38,6 +38,7 @@ CREATE TABLE `client_addresses` (
 
 LOCK TABLES `client_addresses` WRITE;
 /*!40000 ALTER TABLE `client_addresses` DISABLE KEYS */;
+INSERT INTO `client_addresses` VALUES (41,'tukaaa',46),(42,'tam',46),(43,'segaaaa',46),(44,'tam',46),(45,'segaaaa',46),(46,'tam',46);
 /*!40000 ALTER TABLE `client_addresses` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -51,19 +52,22 @@ DROP TABLE IF EXISTS `clients`;
 CREATE TABLE `clients` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
-  `firstName` varchar(100) NOT NULL,
-  `lastName` varchar(100) NOT NULL,
+  `first_name` varchar(100) NOT NULL,
+  `last_name` varchar(100) NOT NULL,
   `phone` varchar(100) NOT NULL,
   `phone2` varchar(100) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
   `discount` double DEFAULT NULL,
-  `receive_sms` tinyint(4) DEFAULT NULL,
+  `receive_sms` tinyint(4) NOT NULL DEFAULT '0',
+  `active` tinyint(4) NOT NULL DEFAULT '1',
+  `avatar` varchar(100) DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `clients_phone_UN` (`phone`),
   UNIQUE KEY `clients_phone2_UN` (`phone2`),
   KEY `clients_users_FK` (`user_id`),
   CONSTRAINT `clients_users_FK` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -72,7 +76,7 @@ CREATE TABLE `clients` (
 
 LOCK TABLES `clients` WRITE;
 /*!40000 ALTER TABLE `clients` DISABLE KEYS */;
-INSERT INTO `clients` VALUES (1,1,'Georgi','Georgiev','0878878096',NULL,NULL,NULL,NULL);
+INSERT INTO `clients` VALUES (46,2,'Georgi','Georgiev','12345aaaa',NULL,NULL,NULL,0,1,'http://localhost:3000/avatar/client_46.jpeg','2017-10-28 19:05:27');
 /*!40000 ALTER TABLE `clients` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -254,7 +258,7 @@ CREATE TABLE `session` (
 
 LOCK TABLES `session` WRITE;
 /*!40000 ALTER TABLE `session` DISABLE KEYS */;
-INSERT INTO `session` VALUES (3,2,'asdadadadada','asddgff','2017-10-13 16:36:18'),(4,2,'tokeen','dsada','2017-10-14 22:42:16'),(11,1,'3CN79ARTWD9N3ZDSW0STYR5L9FDU77AOIDV97MWWCG10H2CDGB','2HIOZS84GLDBY2456IJIGDYZYA8GLE4M84KJOZ57LNGZS14AJA','2017-10-25 00:39:44');
+INSERT INTO `session` VALUES (3,2,'asdadadadada','asddgff','2017-10-13 16:36:18'),(4,2,'tokeen','dsada','2017-10-14 22:42:16'),(11,1,'3CN79ARTWD9N3ZDSW0STYR5L9FDU77AOIDV97MWWCG10H2CDGB','2HIOZS84GLDBY2456IJIGDYZYA8GLE4M84KJOZ57LNGZS14AJA','2017-10-28 20:20:25');
 /*!40000 ALTER TABLE `session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -312,7 +316,7 @@ CREATE TABLE `site_orders` (
   `type` enum('fast','normal') NOT NULL,
   `total_amount` double DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -321,7 +325,7 @@ CREATE TABLE `site_orders` (
 
 LOCK TABLES `site_orders` WRITE;
 /*!40000 ALTER TABLE `site_orders` DISABLE KEYS */;
-INSERT INTO `site_orders` VALUES (26,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-10-25 02:00:27','2017-10-24 23:26:44','2017-10-24 23:26:44','2017-10-24 23:26:44','pending','fast',NULL),(27,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-10-25 02:00:39','2017-10-25 02:01:57','2017-10-25 02:01:57','2017-10-25 02:01:57','pending','normal',100);
+INSERT INTO `site_orders` VALUES (26,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-10-25 02:00:27','2017-10-24 23:26:44','2017-10-24 23:26:44','2017-10-24 23:26:44','finished','fast',NULL),(27,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-10-25 02:00:39','2017-10-25 02:01:57','2017-10-25 02:01:57','2017-10-25 02:01:57','pending','normal',100),(28,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-10-26 00:28:51','2017-10-24 23:26:44','2017-10-24 23:26:44','2017-10-24 23:26:44','finished','fast',NULL),(29,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-10-26 00:36:30','2017-10-24 23:26:44','2017-10-24 23:26:44','2017-10-24 23:26:44','finished','fast',NULL),(30,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-10-26 18:35:58','2017-10-24 23:26:44','2017-10-24 23:26:44','2017-10-24 23:26:44','pending','fast',NULL);
 /*!40000 ALTER TABLE `site_orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -430,7 +434,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Pafkata','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',1,1,'http://localhost:3000/avatar/user_1.png'),(2,'georgi','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',1,0,NULL),(3,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(4,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(5,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(6,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(7,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(8,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(9,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(10,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(11,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(12,'Stefko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(13,'Petkan','$2a$10$ZzU7rZOTPSagDgR9ltdeHO7sC7sJSRa2D.j1IRqG8w99Pm9HrVVz2',0,0,'http://localhost:3000/avatar/user_13.png'),(14,'Pafkata','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',1,1,NULL),(15,'Pafkata','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',1,1,NULL),(16,'Pafkata','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(17,'Pafkata','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL);
+INSERT INTO `users` VALUES (1,'Pafkata','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',1,1,'http://localhost:3000/avatar/user_1.png'),(2,'georgi','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',1,1,NULL),(3,'stamat','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(4,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(5,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(6,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(7,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(8,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(9,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(10,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(11,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(12,'Stefko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(13,'Petkan','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,0,'http://localhost:3000/avatar/user_13.png'),(14,'Pafkata','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',1,1,NULL),(15,'Pafkata','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',1,1,NULL),(16,'Pafkata','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(17,'Pafkata','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -443,4 +447,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-10-25  2:04:26
+-- Dump completed on 2017-10-28 19:23:05
