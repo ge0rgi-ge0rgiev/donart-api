@@ -114,6 +114,7 @@ const router = require('express').Router()
              */
             router.post('/services/saveService',
                 middlewares.adminOnlyCheck,
+                upload.single('avatar'),
                 middlewares.routes.services.saveService,
                 ServiceController.saveService
             );

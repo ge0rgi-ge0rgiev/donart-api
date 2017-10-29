@@ -100,7 +100,7 @@ let Private = {
             serviceData[serviceIndex].subCategories.push(subCategories[i]);
         }
 
-        serviceData = functions.intToBoolFieldValues(serviceData, ['active']);
+        serviceData = functions.intToBoolFieldValues(serviceData, ['active', 'discountable']);
 
         return serviceData;
     },

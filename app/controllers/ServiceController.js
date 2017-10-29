@@ -17,7 +17,31 @@ exports.saveCategory = (req, res, next) => {
  */
 exports.saveService = (req, res, next) => {
     ServiceModel.saveService(req.body)
-        .then(data => res.sendSuccess(data))
+        .then(service => {
+            res.locals.service = service;
+            if (req.file) {
+                let filename = 'service_' + service.id + '.' + (req.file.mimetype.split('/')[1]);
+                return functions.moveUploadedFiles(req.file.path, [config.api.uploadDir.avatars, filename]);
+            }
+        })
+        .then(avatar => {
+            if (avatar) {
+                let avatarUrl = [
+                    functions.getDomain(req),
+                    config.api.avatarRoute,
+                    avatar.split('/').pop()
+                ].join('');
+
+                return ServiceModel.saveService({
+                    id: res.locals.service.id,
+                    avatar: avatarUrl
+                });
+            }
+        })
+        .then(service => {
+            let responseData = (service) ? service : res.locals.service; 
+            return res.sendSuccess(responseData); 
+        })
         .catch(err => next(err));
 }
 
