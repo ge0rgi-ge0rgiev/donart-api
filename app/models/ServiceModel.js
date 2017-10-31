@@ -10,9 +10,10 @@ let Private = {
 
         serviceCategory: (data) => {
             data = functions.normalizeFields(data);
+            data = functions.intToBoolFieldValues(data, ['active']);
 
-            if (data.active !== undefined) {
-                data.active = (data.active == "true") ? 1 : 0;
+            if (data.translation) {
+                data.translation = JSON.stringify(data.translation);
             }
 
             return data;
@@ -20,14 +21,7 @@ let Private = {
 
         service: (data) => {
             data = functions.normalizeFields(data);
-
-            if (data.active !== undefined) {
-                data.active = (data.active == "true") ? 1 : 0;
-            }
-
-            if (data.discountable !== undefined) {
-                data.discountable = (data.discountable == "true") ? 1 : 0;
-            }
+            data = functions.intToBoolFieldValues(data, ['active', 'discountable']);
 
             return data;
         },
@@ -101,6 +95,9 @@ let Private = {
         }
 
         serviceData = functions.intToBoolFieldValues(serviceData, ['active', 'discountable']);
+        serviceData = functions.applyCbToField(serviceData, 'translation', (data) => {
+            return JSON.parse(data);
+        });
 
         return serviceData;
     },
@@ -121,7 +118,10 @@ ServiceModel.getCategoryById = (categoryId) => {
                 .where('id').eq(categoryId)
 
             dbCategories.findSingle(criteria)
-                .then(serviceCategory => resolve(serviceCategory))
+                .then(serviceCategory => {
+                    serviceCategory.translation = JSON.parse(serviceCategory.translation);
+                    resolve(serviceCategory)
+                })
                 .catch((err) => {
                     functions.logError(err);
                     reject(new errors.DatabaseError(err.sqlMessage));
@@ -142,7 +142,10 @@ ServiceModel.getServiceById = (serviceId) => {
                 .where('id').eq(serviceId)
 
             dbServices.findSingle(criteria)
-                .then(service => resolve(service))
+                .then(service => {
+                    service.translation = JSON.parse(service.translation);
+                    resolve(service)
+                })
                 .catch((err) => {
                     functions.logError(err);
                     reject(new errors.DatabaseError(err.sqlMessage));
@@ -160,8 +163,7 @@ ServiceModel.saveCategory = (serviceCategory) => {
     return new Promise((resolve, reject) => {
         db.ready(function () {
             db.table('service_categories').save(serviceCategory)
-                .then(serviceCategory => ServiceModel.getCategoryById(serviceCategory.id))
-                .then(serviceCategory => resolve(serviceCategory))
+                .then(serviceCategory => resolve(ServiceModel.getCategoryById(serviceCategory.id)))
                 .catch((err) => {
                     functions.logError(err);
                     reject(new errors.DatabaseError(err.sqlMessage));
@@ -179,8 +181,7 @@ ServiceModel.saveService = (service) => {
     return new Promise((resolve, reject) => {
         db.ready(function () {
             db.table('services').save(service)
-                .then(service => ServiceModel.getServiceById(service.id))
-                .then(service => resolve(service))
+                .then(service => resolve(ServiceModel.getServiceById(service.id)))
                 .catch((err) => {
                     functions.logError(err);
                     reject(new errors.DatabaseError(err.sqlMessage));

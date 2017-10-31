@@ -166,5 +166,23 @@ Functions.intToBoolFieldValues = (data, fields) => {
     return data;
 }
 
+Functions.applyCbToField = (data, field, callback) => {
+    // Loop data indexes
+    for (let index in data) {
+        // Loop index data fields
+        for (let objField in data[index]) {
+            if (objField == field) {
+                data[index][objField] = callback(data[index][objField]);
+            }
+            
+            if (typeof data[index][objField] === 'object') {
+                Functions.applyCbToField(data[index][objField], field, callback);
+            } 
+        }
+    }
+
+    return data;
+}
+
 
 module.exports = Functions;

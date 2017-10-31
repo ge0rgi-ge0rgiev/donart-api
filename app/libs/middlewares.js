@@ -158,10 +158,8 @@ module.exports = {
             saveCategory: (req, res, next) => {
                 // Create action
                 if (req.body.id === undefined) {
-                    req.check("label").exists().withMessage('Required field.');
+                    req.check("translation").exists().withMessage('Required field.');
                 }
-
-                req.check("parentId").optional();
 
                 var validationErrors = req.validationErrors();
                 if (validationErrors) return next(functions.formatExpValErrors(validationErrors));
@@ -178,7 +176,7 @@ module.exports = {
             saveService: (req, res, next) => {
                 if (req.body.id === undefined) {
                     req.check("serviceCategoryId").exists().withMessage('Required field.');
-                    req.check("label").exists().withMessage('Required field.');
+                    req.check("translation").exists().withMessage('Required field.');
                     req.check("price").exists().withMessage('Required field.');
                 }
 
@@ -207,6 +205,7 @@ module.exports = {
                 // Required fields for fast type order
                 req.check("firstName").exists().withMessage('Required field.');
                 req.check("lastName").exists().withMessage('Required field.');
+                req.check("email").exists().withMessage('Required field.');
                 req.check("phone").exists().withMessage('Required field.');
                 req.check("pickDate").exists().withMessage('Required field.');
                 req.check("timeFrom").exists().withMessage('Required field.');
