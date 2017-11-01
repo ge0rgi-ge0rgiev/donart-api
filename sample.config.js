@@ -36,7 +36,7 @@ config.database = {
 // Authentication protected endpoints
 config.protectedEndpoints = [
     '/users/save',
-    '/users/deleteUser',
+    '/users/toggleActiveState',
     '/services/saveCategory',
     '/services/deleteCategory',
     '/services/saveService',

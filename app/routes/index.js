@@ -14,6 +14,7 @@ const router = require('express').Router()
     ServiceController = require('../controllers/ServiceController'),
     SiteOrderController = require('../controllers/SiteOrderController'),
     ClientController = require('../controllers/ClientController'),
+    OrderController = require('../controllers/OrderController'),
     TestController = require('../controllers/TestController');
 
     /**
@@ -66,14 +67,13 @@ const router = require('express').Router()
              * Save user - Create & Update
              * 
              */
-            router.post('/users/deleteUser',
+            router.post('/users/toggleActiveState',
                 middlewares.adminOnlyCheck,
                 [
                     check('id').exists().withMessage('User ID is required.'),
                 ],
                 middlewares.validatorResult,
-                middlewares.routes.users.deleteUser,
-                UserController.save
+                UserController.toggleActiveState
             );
 
             /**
@@ -204,6 +204,36 @@ const router = require('express').Router()
              * Get clients by filter
              */
             router.post('/clients/filter', ClientController.filter);
+
+
+
+    /**
+     * Orders endpoints
+     */
+
+
+            /**
+             * Create order
+             */
+            router.post('/orders/createOrder',
+                middlewares.routes.orders.createOrder,
+                OrderController.createOrder
+            )
+
+
+    /**
+     * NFC endpoints
+     */
+            /**
+             * Create order
+             */
+            // router.post('/nfc/createOrder',
+            //     middlewares.routes.orders.createOrder,
+            //     OrderController.createOrder
+            // )
+            
+
+
 /**
  * For test purporses
  */

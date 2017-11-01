@@ -132,14 +132,8 @@ module.exports = {
                 if (validationErrors) return next(functions.formatExpValErrors(validationErrors));
                 
                 next();
-            },
-
-            deleteUser: (req, res, next) => {
-                // Make active state - 0
-                req.body.active = 0;
-                next();
             }
-
+            
         },
 
         avatar: (req, res, next) => {
@@ -268,10 +262,10 @@ module.exports = {
              */
             save: (req, res, next) => {
                 if (req.body.id === undefined) {
-                    req.check("firstName").exists().withMessage('Required field.')
-                    req.check("lastName").exists().withMessage('Required field.')
-                    req.check("phone").exists().withMessage('Required field.')
-                    req.check("userId").exists().withMessage('Required field.')
+                    req.check("firstName").exists().withMessage('Required field.');
+                    req.check("lastName").exists().withMessage('Required field.');
+                    req.check("phone").exists().withMessage('Required field.');
+                    req.check("userId").exists().withMessage('Required field.');
                 }
 
                 var validationErrors = req.validationErrors();
@@ -289,6 +283,22 @@ module.exports = {
 
                 next();
             },
+        },
+
+        orders: {
+
+            createOrder: (req, res, next) => {
+                req.check("userId").exists().withMessage('Required field.');
+                req.check("clientId").exists().withMessage('Required field.');
+                req.check("paymentStatus").exists().withMessage('Required field.');
+
+                var validationErrors = req.validationErrors();
+                
+                // Return validation errors
+                if (validationErrors) return next(functions.formatExpValErrors(validationErrors));
+
+                next();
+            }
         }
     }
 

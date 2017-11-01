@@ -117,3 +117,12 @@ exports.getAll = (req, res, next) => {
         .catch(err => next(err));
 }
 
+/**
+ * Toggle the active user state
+ */
+exports.toggleActiveState = (req, res, next) => {
+    UserModel.toggleActiveState(req.body.id)
+        .then(user => res.sendSuccess(user))
+        .catch(err => next(err));
+}
+

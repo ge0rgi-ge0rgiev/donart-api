@@ -133,4 +133,27 @@ UserModel.save = (user) => {
     });
 }
 
+/**
+ * Toggle active state.
+ * 
+ */
+UserModel.toggleActiveState = (userId) => {
+    return new Promise((resolve, reject) => {
+        UserModel.getUserById(userId)
+        .then(user => {
+            return UserModel.save({
+                id: user.id,
+                active: (user.active === true) ? "false" : "true"
+            });
+        })
+        .then(user => resolve(user))
+        .catch((err) => {
+            functions.logError(err);
+            reject(new errors.DatabaseError(err.sqlMessage));
+        });
+    });
+}
+
+
+
 module.exports = UserModel;
