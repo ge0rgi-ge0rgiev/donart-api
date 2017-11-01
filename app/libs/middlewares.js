@@ -172,6 +172,7 @@ module.exports = {
                     req.check("serviceCategoryId").exists().withMessage('Required field.');
                     req.check("translation").exists().withMessage('Required field.');
                     req.check("price").exists().withMessage('Required field.');
+                    req.check("orderLimit").exists().withMessage('Required field.');
                 }
 
                 req.check("discountable").optional().isBoolean().withMessage('Must be boolean.');
