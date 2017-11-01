@@ -46,6 +46,8 @@ config.protectedEndpoints = [
     '/clients/addAddress',
     '/clients/deleteAddress',
     '/clients/filter',
+    '/configuration/save',
+    '/configuration/delete',
 ];
 
 module.exports = config;

@@ -15,6 +15,7 @@ const router = require('express').Router()
     SiteOrderController = require('../controllers/SiteOrderController'),
     ClientController = require('../controllers/ClientController'),
     OrderController = require('../controllers/OrderController'),
+    ConfigurationController = require('../controllers/ConfigurationController'),
     TestController = require('../controllers/TestController');
 
     /**
@@ -219,6 +220,39 @@ const router = require('express').Router()
                 middlewares.routes.orders.createOrder,
                 OrderController.createOrder
             )
+
+
+    /**
+     * Configuration endpoints
+     */
+
+
+            /**
+             * Get all configuration settings
+             */
+            router.post('/configuration/getAll', ConfigurationController.getAll);
+
+
+            /**
+             * Save configuration - Both Cerate & Update
+             */
+            router.post('/configuration/save',
+                middlewares.adminOnlyCheck,
+                middlewares.routes.configuration.save,
+                ConfigurationController.save
+            );
+
+            /**
+             * Delete configuration setting
+             */
+            router.post('/configuration/delete',
+                middlewares.adminOnlyCheck,
+                [
+                    check('id').exists().withMessage('ID is required.'),
+                ],
+                middlewares.validatorResult,
+                ConfigurationController.delete
+            );
 
 
     /**

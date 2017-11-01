@@ -300,6 +300,23 @@ module.exports = {
 
                 next();
             }
+        },
+
+        configuration: {
+
+            save: (req, res, next) => {
+                if (req.body.id) {
+                    req.check("setting").exists().withMessage('Required field.');
+                    req.check("value").exists().withMessage('Required field.');
+                }
+
+                var validationErrors = req.validationErrors();
+                
+                // Return validation errors
+                if (validationErrors) return next(functions.formatExpValErrors(validationErrors));
+
+                next();
+            }
         }
     }
 
