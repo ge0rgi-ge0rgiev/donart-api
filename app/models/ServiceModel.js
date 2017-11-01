@@ -120,7 +120,8 @@ ServiceModel.getCategoryById = (categoryId) => {
             dbCategories.findSingle(criteria)
                 .then(serviceCategory => {
                     serviceCategory.translation = JSON.parse(serviceCategory.translation);
-                    resolve(serviceCategory)
+                    serviceCategory = functions.intToBoolFieldValues([serviceCategory], ['active']);
+                    resolve(serviceCategory.shift());
                 })
                 .catch((err) => {
                     functions.logError(err);
@@ -144,7 +145,8 @@ ServiceModel.getServiceById = (serviceId) => {
             dbServices.findSingle(criteria)
                 .then(service => {
                     service.translation = JSON.parse(service.translation);
-                    resolve(service)
+                    service = functions.intToBoolFieldValues([service], ['active']);
+                    resolve(service.shift());
                 })
                 .catch((err) => {
                     functions.logError(err);
