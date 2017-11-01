@@ -98,16 +98,15 @@ const router = require('express').Router()
             );
 
             /**
-             * Delete Service Category
+             * Toggle Service Category active state
              */
-            router.post('/services/deleteCategory',
+            router.post('/services/toggleActiveServiceCategoryState',
                 middlewares.adminOnlyCheck,
                 [
-                    check('id').exists().withMessage('ServiceCategory ID is required.'),
+                    check('id').exists().withMessage('Service Category ID is required.'),
                 ],
                 middlewares.validatorResult,
-                middlewares.routes.services.deleteCategory,
-                ServiceController.saveCategory
+                ServiceController.toggleActiveServiceCategoryState
             );
 
             /**
@@ -121,16 +120,15 @@ const router = require('express').Router()
             );
 
             /**
-             * Delete Service Category
+             * Toggle Service active state
              */
-            router.post('/services/deleteService',
+            router.post('/services/toggleActiveServiceState',
                 middlewares.adminOnlyCheck,
                 [
                     check('id').exists().withMessage('Service ID is required.'),
                 ],
                 middlewares.validatorResult,
-                middlewares.routes.services.deleteService,
-                ServiceController.saveService
+                ServiceController.toggleActiveServiceState
             );
 
             /**

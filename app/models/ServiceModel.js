@@ -225,5 +225,45 @@ ServiceModel.getServices = () => {
     });
 }
 
+/**
+ * Toggle Service active state.
+ */
+ServiceModel.toggleActiveServiceState = (id) => {
+    return new Promise((resolve, reject) => {
+        ServiceModel.getServiceById(id)
+            .then(service => {
+                return ServiceModel.saveService({
+                    id: service.id,
+                    active: (service.active === true) ? 0 : 1
+                });
+            })
+            .then(service => resolve(service))
+            .catch((err) => {
+                functions.logError(err);
+                reject(new errors.DatabaseError(err.sqlMessage));
+            });
+    });
+}
+
+
+/**
+ * Toggle Service Category active state.
+ */
+ServiceModel.toggleActiveServiceCategoryState = (id) => {
+    return new Promise((resolve, reject) => {
+        ServiceModel.getCategoryById(id)
+            .then(category => {
+                return ServiceModel.saveCategory({
+                    id: category.id,
+                    active: (category.active === true) ? 0 : 1
+                });
+            })
+            .then(category => resolve(category))
+            .catch((err) => {
+                functions.logError(err);
+                reject(new errors.DatabaseError(err.sqlMessage));
+            });
+    });
+}
 
 module.exports = ServiceModel;

@@ -186,12 +186,6 @@ module.exports = {
                 next();
             },
 
-            deleteService: (req, res, next) => {
-                // Make active state - 0
-                req.body.active = 0;
-                next();
-            },
-
         },
 
         site: {

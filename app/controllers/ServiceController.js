@@ -54,3 +54,23 @@ exports.getAll = (req, res, next) => {
         .then(services => res.sendSuccess(services))
         .catch(err => next(err));
 }
+
+/**
+ * Toggle active state of service
+ * 
+ */
+exports.toggleActiveServiceState = (req, res, next) => {
+    ServiceModel.toggleActiveServiceState(req.body.id)
+        .then(service => res.sendSuccess(service))
+        .catch(err => next(err));
+}
+
+/**
+ * Toggle active state of service category
+ * 
+ */
+exports.toggleActiveServiceCategoryState = (req, res, next) => {
+    ServiceModel.toggleActiveServiceCategoryState(req.body.id)
+        .then(category => res.sendSuccess(category))
+        .catch(err => next(err));
+}
