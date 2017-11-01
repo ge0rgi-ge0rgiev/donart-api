@@ -10,6 +10,7 @@ const bcrypt = require('bcrypt'),
  * 
  */
 exports.login = (req, res, next) => {
+    let returnData;
     let SessionModel = require('../models/SessionModel');
 
     // Get user object by User ID and hashed Password
@@ -42,7 +43,14 @@ exports.login = (req, res, next) => {
                 })
             }
         })
-        .then(session => res.sendSuccess(session))
+        .then(session => {
+            returnData = session;
+            return UserModel.getUserById(session.userId);
+        })
+        .then(user => {
+            returnData.avatar = user.avatar;
+            res.sendSuccess(returnData);
+        })
         .catch(err => next(err));
 }
 
