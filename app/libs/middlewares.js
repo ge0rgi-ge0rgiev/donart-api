@@ -205,6 +205,14 @@ module.exports = {
                 if (['fast', 'normal'].indexOf(req.body.type) === -1)
                     throw new errors.InvalidParameters('Order type can be only fast or normal.');
 
+                // Phone validation
+                if (functions.regexMatch(req.body.phone, 'phone') === false)
+                    throw new errors.InvalidParameters('Invalid phone.');
+
+                // Email validation
+                if (functions.regexMatch(req.body.email, 'email') === false)
+                    throw new errors.InvalidParameters('Invalid email.');
+
                 // Validations for normal type order
                 if (req.body.type !== undefined && req.body.type == 'normal') {
                     req.check("totalAmount").exists().withMessage('Required field.');

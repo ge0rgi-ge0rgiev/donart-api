@@ -39,7 +39,10 @@ let Private = {
             db.ready(function () {
                 db.table('site_orders').save(order)
                     .then(order => resolve(order))
-                    .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
+                    .catch((err) => {
+                        functions.logError(err);
+                        reject(new errors.DatabaseError(err.sqlMessage));
+                    });
             });
         });
     },
@@ -53,7 +56,10 @@ let Private = {
                 db.ready(function () {
                     db.table('site_order_products').save(product)
                         .then(product => resolve(product))
-                        .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
+                        .catch((err) => {
+                            functions.logError(err);
+                            reject(new errors.DatabaseError(err.sqlMessage));
+                        });
                 });
             })
             )
@@ -75,7 +81,10 @@ let Private = {
 
                         dbOrderProducts.find(criteria)
                             .then(products => resolve(products))
-                            .catch(err => reject(new errors.DatabaseError(err.sqlMessage)));
+                            .catch((err) => {
+                                functions.logError(err);
+                                reject(new errors.DatabaseError(err.sqlMessage));
+                            });
                     });
                 })
             )

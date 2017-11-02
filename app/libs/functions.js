@@ -184,5 +184,13 @@ Functions.applyCbToField = (data, field, callback) => {
     return data;
 }
 
+// Match regex
+Functions.regexMatch = (string, validation) => {
+    let regex = config.regex[validation];
+    if (regex === undefined)
+        throw new errors.InvalidParameters('Invalid validation regex key.');
+    return regex.test(string);
+}
+
 
 module.exports = Functions;

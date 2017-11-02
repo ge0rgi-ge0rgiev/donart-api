@@ -37,17 +37,28 @@ config.database = {
 config.protectedEndpoints = [
     '/users/save',
     '/users/toggleActiveState',
+
     '/services/saveCategory',
     '/services/saveService',
     '/services/toggleActiveServiceState',
     '/services/toggleActiveServiceCategoryState',
     '/services/getAll',
+    
     '/clients/save',
     '/clients/addAddress',
     '/clients/deleteAddress',
     '/clients/filter',
+    
     '/configuration/save',
     '/configuration/delete',
+
+    '/site/createOrder'
 ];
+
+// Regex patterns
+config.regex = {
+    phone: /^\+?(?:[\d\s()]*)$/,
+    email: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+};
 
 module.exports = config;
