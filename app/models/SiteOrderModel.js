@@ -366,6 +366,10 @@ SiteOrderModel.saveOrder = (order) => {
 SiteOrderModel.getAvailableHours = (date) => {
     return new Promise((resolve, reject) => {
         date = moment(date).endOf('day');
+
+        if (date.isValid() === false)
+            return reject(new errors.InvalidParameters('Invalid date.'));
+
         let weekDays;
         if ([...Array(6).keys()].slice(1).indexOf(date.weekday()) > -1) { // Work Days
             weekDays = 'workDays';
@@ -410,7 +414,6 @@ SiteOrderModel.getAvailableHours = (date) => {
                 reject(new errors.DatabaseError(err.sqlMessage));
             });
     })
-    
 }
 
 module.exports = SiteOrderModel;

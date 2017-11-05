@@ -86,4 +86,11 @@ config.regex = {
     email: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 };
 
+config.mailgun = {
+    inbox: "anton.a.dimitrov@gmail.com",
+    // inbox: "g.georgiev.work@gmail.com",
+    domain: "sandbox7ba72b200daf432b9516d65426bd4079.mailgun.org",
+    apiKey: "key-17cce30180fd188cbdf2543eb48980f8"
+}
+
 module.exports = config;

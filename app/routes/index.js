@@ -175,6 +175,21 @@ const router = require('express').Router()
                 SiteOrderController.getAvailableHours
             );
 
+            /**
+             * Handle the Contact form from the site and send the inquiry with attachments
+             */
+            router.post('/site/inquiry',
+                upload.array('attachment', 3),
+                [
+                    check('name').exists().withMessage('Required field.'),
+                    check('email').exists().withMessage('Required field.'),
+                    check('subject').exists().withMessage('Required field.'),
+                    check('text').exists().withMessage('Required field.'),
+                ],
+                middlewares.validatorResult,
+                SiteOrderController.inquiry
+            );
+
     /**
      * Clients ednpoints
      */
