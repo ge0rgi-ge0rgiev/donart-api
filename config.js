@@ -77,7 +77,6 @@ config.protectedEndpoints = [
     '/site/createOrder',
     '/site/changeOrderStatus',
     '/site/getAvailableHours',
-    
 ];
 
 // Regex patterns
@@ -89,8 +88,8 @@ config.regex = {
 config.mailgun = {
     inbox: "anton.a.dimitrov@gmail.com",
     // inbox: "g.georgiev.work@gmail.com",
-    domain: "sandbox7ba72b200daf432b9516d65426bd4079.mailgun.org",
-    apiKey: "key-17cce30180fd188cbdf2543eb48980f8"
+    domain: "www.donart.bg",
+    apiKey: "key-2fa8e0942e94b0bdef0c46343620e20b"
 }
 
 module.exports = config;
