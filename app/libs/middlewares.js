@@ -250,8 +250,8 @@ module.exports = {
                 // Return validation errors
                 if (validationErrors) return next(functions.formatExpValErrors(validationErrors));
 
-                if (['pending', 'finished'].indexOf(req.body.status) < 0) {
-                    throw new errors.InvalidParameters("Order status can be only 'pending' or 'finished'.");
+                if (['pending', 'finished', 'canceled'].indexOf(req.body.status) < 0) {
+                    throw new errors.InvalidParameters("Order status can be only 'pending', 'canceled' or finished'.");
                 }
 
                 next();

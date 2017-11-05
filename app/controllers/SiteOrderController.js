@@ -5,7 +5,7 @@ const config = require('../../config'),
 
 
 exports.createOrder = (req, res, next) => {
-    SiteOrderModel.save(req.body)
+    SiteOrderModel.createOrder(req.body)
         .then(order => res.sendSuccess(order))
         .catch(err => next(err));
 }
@@ -23,9 +23,15 @@ exports.changeOrderStatus = (req, res, next) => {
             if (order === undefined)
                 throw errors.InvalidParameters('Invalid order id');
             order.status = req.body.status;
-            return SiteOrderModel.save(req.body);     
+            return SiteOrderModel.saveOrder(req.body);     
         })
         .then(order => res.sendSuccess(order))
+        .catch(err => next(err));
+}
+
+exports.getAvailableHours = (req, res, next) => {
+    SiteOrderModel.getAvailableHours(req.body.date)
+        .then(availableHours => res.sendSuccess(availableHours))
         .catch(err => next(err));
 }
 

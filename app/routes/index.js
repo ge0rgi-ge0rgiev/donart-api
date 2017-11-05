@@ -163,6 +163,18 @@ const router = require('express').Router()
                 SiteOrderController.changeOrderStatus
             );
 
+            /**
+             * Get available hours for booking for specific date
+             */
+            router.post('/site/getAvailableHours',
+                middlewares.adminOnlyCheck,
+                [
+                    check('date').exists().withMessage('Service ID is required.'),
+                ],
+                middlewares.validatorResult,
+                SiteOrderController.getAvailableHours
+            );
+
     /**
      * Clients ednpoints
      */
@@ -171,8 +183,8 @@ const router = require('express').Router()
              * Save client for both Create and Update
              */
             router.post('/clients/save',
-                upload.single('avatar'),
                 middlewares.routes.clients.save,
+            
                 ClientController.save
             );
 
@@ -214,10 +226,10 @@ const router = require('express').Router()
             /**
              * Create order
              */
-            router.post('/orders/createOrder',
-                middlewares.routes.orders.createOrder,
-                OrderController.createOrder
-            )
+            // router.post('/orders/createOrder',
+            //     middlewares.routes.orders.createOrder,
+            //     OrderController.createOrder
+            // )
 
 
     /**

@@ -91,6 +91,7 @@ CREATE TABLE `configuration` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `setting` varchar(100) NOT NULL,
   `value` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -101,7 +102,7 @@ CREATE TABLE `configuration` (
 
 LOCK TABLES `configuration` WRITE;
 /*!40000 ALTER TABLE `configuration` DISABLE KEYS */;
-INSERT INTO `configuration` VALUES (1,'currency','BGN'),(2,'sessionDuration','3600');
+INSERT INTO `configuration` VALUES (1,'currency','BGN','Currency for whole API'),(2,'sessionDuration','3600','Session duration in seconds'),(3,'pickTimeInterval','1800','Time in between in site order for courier delivery.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -258,7 +259,7 @@ CREATE TABLE `services` (
 
 LOCK TABLES `services` WRITE;
 /*!40000 ALTER TABLE `services` DISABLE KEYS */;
-INSERT INTO `services` VALUES (2,17,'{\"en\": \"one\", \"bg\": \"едно\"}',NULL,200,0,1,'http://localhost:3000/avatar/service_2.octet-stream',10),(3,17,'{\"en\": \"Botush\", \"bg\": \"Ботуш a a a\"}',NULL,200,0,1,'http://localhost:3000/avatar/service_3.octet-stream',10),(4,17,'{\"en\": \"Botush\", \"bg\": \"Ботуш a a a\"}',NULL,200,0,1,'http://localhost:3000/avatar/service_4.octet-stream',10),(5,17,'{\"en\": \"Botush\", \"bg\": \"Ботуш a a a\"}',NULL,200,0,1,'http://localhost:3000/avatar/service_5.octet-stream',0),(6,17,'{\"en\": \"Botush\", \"bg\": \"Ботуш a a a\"}',NULL,200,0,1,'http://localhost:3000/avatar/service_6.octet-stream',200),(7,17,'{\"en\": \"Botush\", \"bg\": \"Ботуш a a a\"}',NULL,200,0,1,'http://localhost:3000/avatar/service_7.octet-stream',200),(8,17,'{\"en\": \"Botush\", \"bg\": \"Ботуш a a a\"}',NULL,200,0,1,'http://localhost:3000/avatar/service_8.octet-stream',200);
+INSERT INTO `services` VALUES (2,17,'{\"en\": \"one\", \"bg\": \"едно\"}',NULL,200,0,1,'http://localhost:3000/avatar/service_2.octet-stream',10),(3,17,'{\"en\": \"Botush\", \"bg\": \"Ботуш a a a\"}',NULL,200,0,1,'http://localhost:3000/avatar/service_3.octet-stream',10),(4,17,'{\"en\": \"Botush\", \"bg\": \"Ботуш a a a\"}',NULL,200,0,1,'http://localhost:3000/avatar/service_4.octet-stream',10),(5,17,'{\"en\": \"Botush\", \"bg\": \"Ботуш a a a\"}',NULL,200,0,1,'http://localhost:3000/avatar/service_5.octet-stream',0),(6,17,'{\"en\": \"Botush\", \"bg\": \"Ботуш a a a\"}',NULL,200,0,1,'http://localhost:3000/avatar/service_6.octet-stream',200),(7,17,'{\"en\": \"Botush\", \"bg\": \"Ботуш a a a\"}',NULL,200,0,1,'http://localhost:3000/avatar/service_7.octet-stream',200),(8,17,'{\"en\": \"Botush\", \"bg\": \"Ботуш a a a\"}',NULL,200,0,0,'http://localhost:3000/avatar/service_8.octet-stream',200);
 /*!40000 ALTER TABLE `services` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -278,7 +279,7 @@ CREATE TABLE `session` (
   PRIMARY KEY (`id`),
   KEY `session_users_FK` (`user_id`),
   CONSTRAINT `session_users_FK` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -287,8 +288,35 @@ CREATE TABLE `session` (
 
 LOCK TABLES `session` WRITE;
 /*!40000 ALTER TABLE `session` DISABLE KEYS */;
-INSERT INTO `session` VALUES (3,2,'asdadadadada','asddgff','2017-10-13 16:36:18'),(4,2,'tokeen','dsada','2017-10-14 22:42:16'),(11,1,'3CN79ARTWD9N3ZDSW0STYR5L9FDU77AOIDV97MWWCG10H2CDGB','2HIOZS84GLDBY2456IJIGDYZYA8GLE4M84KJOZ57LNGZS14AJA','2017-11-01 23:02:04');
+INSERT INTO `session` VALUES (3,2,'asdadadadada','asddgff','2017-10-13 16:36:18'),(4,2,'tokeen','dsada','2017-10-14 22:42:16'),(11,1,'3CN79ARTWD9N3ZDSW0STYR5L9FDU77AOIDV97MWWCG10H2CDGB','2HIOZS84GLDBY2456IJIGDYZYA8GLE4M84KJOZ57LNGZS14AJA','2017-11-05 16:22:01'),(12,18,'0KRAC0TXZQYT0027Z5YNXNDBSR83X6OY5LMZ14XUT3F47XTPEA','4DWD32S0EDAVFDEE2IU20T1Z888S19IXDI6Z4ZH2CI6CEAKQ7E','2017-11-02 12:28:01');
 /*!40000 ALTER TABLE `session` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `site_order_bookings`
+--
+
+DROP TABLE IF EXISTS `site_order_bookings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `site_order_bookings` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `pick_date` datetime NOT NULL,
+  `time_from` datetime NOT NULL,
+  `time_to` datetime NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `site_order_bookings`
+--
+
+LOCK TABLES `site_order_bookings` WRITE;
+/*!40000 ALTER TABLE `site_order_bookings` DISABLE KEYS */;
+INSERT INTO `site_order_bookings` VALUES (2,'2017-11-14 23:59:59','2017-11-14 15:00:00','2017-11-14 16:00:00','2017-11-04 18:05:33'),(5,'2017-11-14 23:59:59','2017-11-14 15:00:00','2017-11-14 16:00:00','2017-11-04 18:05:33'),(8,'2017-11-14 23:59:59','2017-11-14 16:00:00','2017-11-14 17:00:00','2017-11-04 18:41:50'),(10,'2017-11-18 23:59:59','2017-11-14 18:00:00','2017-11-14 19:00:00','2017-11-04 19:01:59'),(15,'2017-11-14 23:59:59','2017-11-14 15:00:00','2017-11-14 16:00:00','2017-11-05 15:12:05');
+/*!40000 ALTER TABLE `site_order_bookings` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -309,7 +337,7 @@ CREATE TABLE `site_order_products` (
   KEY `site_order_products_services_FK` (`service_id`),
   CONSTRAINT `site_order_products_services_FK` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`),
   CONSTRAINT `site_order_products_site_orders_FK` FOREIGN KEY (`order_id`) REFERENCES `site_orders` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -318,7 +346,7 @@ CREATE TABLE `site_order_products` (
 
 LOCK TABLES `site_order_products` WRITE;
 /*!40000 ALTER TABLE `site_order_products` DISABLE KEYS */;
-INSERT INTO `site_order_products` VALUES (1,31,2,10,20),(2,31,3,103,210),(4,33,2,10,20),(5,33,3,103,210),(6,33,2,15,290);
+INSERT INTO `site_order_products` VALUES (1,31,2,10,20),(2,31,3,103,210),(4,33,2,10,20),(5,33,3,103,210),(6,33,2,15,290),(7,37,2,10,2000),(8,37,3,1,200),(9,37,2,5,1000),(10,38,2,10,2000),(11,38,3,1,200),(12,38,2,5,1000),(13,39,2,10,2000),(14,39,3,1,200),(15,39,2,5,1000),(16,40,2,10,2000),(17,40,3,1,200),(18,40,2,5,1000),(19,41,2,10,202200),(20,41,3,1,200),(21,41,2,5,1000),(22,42,2,10,202200),(23,42,3,1,200),(24,42,2,5,1000),(25,43,2,10,2000),(26,43,3,1,200),(27,43,2,5,1000),(28,44,2,10,2000),(29,44,3,1,200),(30,44,2,5,1000),(31,45,2,10,2000),(32,45,3,1,200),(33,45,2,5,1000),(34,49,2,10,2000),(35,49,3,1,200),(36,49,2,5,1000),(37,50,2,10,2000),(38,50,3,1,200),(39,50,2,5,1000);
 /*!40000 ALTER TABLE `site_order_products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -341,11 +369,12 @@ CREATE TABLE `site_orders` (
   `pick_date` datetime NOT NULL,
   `time_from` datetime NOT NULL,
   `time_to` datetime NOT NULL,
-  `status` enum('pending','finished') NOT NULL DEFAULT 'pending',
+  `status` enum('pending','canceled','finished') NOT NULL DEFAULT 'pending',
   `type` enum('fast','normal') NOT NULL,
   `total_amount` double DEFAULT NULL,
+  `currency` varchar(5) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -354,7 +383,7 @@ CREATE TABLE `site_orders` (
 
 LOCK TABLES `site_orders` WRITE;
 /*!40000 ALTER TABLE `site_orders` DISABLE KEYS */;
-INSERT INTO `site_orders` VALUES (26,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-10-25 02:00:27','2017-10-24 23:26:44','2017-10-24 23:26:44','2017-10-24 23:26:44','finished','fast',NULL),(27,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-10-25 02:00:39','2017-10-25 02:01:57','2017-10-25 02:01:57','2017-10-25 02:01:57','pending','normal',100),(28,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-10-26 00:28:51','2017-10-24 23:26:44','2017-10-24 23:26:44','2017-10-24 23:26:44','finished','fast',NULL),(29,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-10-26 00:36:30','2017-10-24 23:26:44','2017-10-24 23:26:44','2017-10-24 23:26:44','finished','fast',NULL),(30,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-10-26 18:35:58','2017-10-24 23:26:44','2017-10-24 23:26:44','2017-10-24 23:26:44','pending','fast',NULL),(31,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-11-01 14:35:36','2017-10-25 02:01:57','2017-10-25 02:01:57','2017-10-25 02:01:57','pending','normal',100),(32,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-11-01 14:59:41','2017-10-24 23:26:44','2017-10-24 23:26:44','2017-10-24 23:26:44','pending','fast',NULL),(33,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-11-01 15:02:05','2017-10-25 02:01:57','2017-10-25 02:01:57','2017-10-25 02:01:57','pending','normal',100);
+INSERT INTO `site_orders` VALUES (31,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-11-01 14:35:36','2017-10-25 02:01:57','2017-10-25 02:01:57','2017-10-25 02:01:57','pending','normal',100,''),(32,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-11-01 14:59:41','2017-10-24 23:26:44','2017-10-24 23:26:44','2017-10-24 23:26:44','pending','fast',NULL,''),(33,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-11-01 15:02:05','2017-10-25 02:01:57','2017-10-25 02:01:57','2017-10-25 02:01:57','pending','normal',100,''),(34,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-11-02 11:37:54','2017-10-24 23:26:44','2017-10-24 23:26:44','2017-10-24 23:26:44','pending','fast',NULL,''),(35,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-11-02 11:44:25','2017-10-24 23:26:44','2017-10-24 23:26:44','2017-10-24 23:26:44','pending','fast',NULL,''),(36,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-11-02 11:44:34','2017-10-24 23:26:44','2017-10-24 23:26:44','2017-10-24 23:26:44','pending','fast',NULL,''),(37,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-11-02 14:20:06','2017-10-25 02:01:57','2017-10-25 02:01:57','2017-10-25 02:01:57','pending','normal',3200,''),(38,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-11-02 14:28:36','2017-10-25 02:01:57','2017-10-25 02:01:57','2017-10-25 02:01:57','pending','normal',3200,''),(39,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-11-04 18:07:16','2017-11-14 20:35:37','2017-11-14 15:00:00','2017-11-14 16:00:00','pending','normal',3200,''),(40,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-11-04 18:11:28','2017-11-14 20:35:37','2017-11-14 15:00:00','2017-11-14 16:00:00','pending','normal',3200,''),(41,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-11-04 18:43:55','2017-11-14 23:59:59','2017-11-14 10:00:00','2017-11-14 11:00:00','pending','normal',3200,''),(42,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-11-04 18:44:55','2017-11-14 23:59:59','2017-11-14 10:00:00','2017-11-14 11:00:00','pending','normal',3200,''),(43,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-11-04 19:02:06','2017-11-14 23:59:59','2017-11-14 15:00:00','2017-11-14 16:00:00','pending','normal',3200,''),(44,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-11-04 19:02:32','2017-11-14 23:59:59','2017-11-14 15:00:00','2017-11-14 16:00:00','pending','normal',3200,''),(45,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-11-05 14:51:15','2017-11-14 23:59:59','2017-11-14 15:00:00','2017-11-14 16:00:00','finished','normal',3200,'BGN'),(46,'Ivan','Petkanov','ivan.petkanov@gmail.com','+0888 88   88 8','Some additional info here','some address','2017-11-05 14:55:07','2017-11-14 23:59:59','2017-11-14 15:00:00','2017-11-14 16:00:00','pending','fast',NULL,'BGN'),(47,'Ivan','Petkanov','ivan.petkanov@gmail.com','+0888 88   88 8','Some additional info here','some address','2017-11-05 15:00:54','2017-11-14 23:59:59','2017-11-14 15:00:00','2017-11-14 16:00:00','pending','fast',NULL,'BGN'),(48,'Ivan','Petkanov','ivan.petkanov@gmail.com','+0888 88   88 8','Some additional info here','some address','2017-11-05 15:03:52','2017-11-14 23:59:59','2017-11-14 15:00:00','2017-11-14 16:00:00','pending','fast',NULL,'BGN'),(49,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-11-05 15:04:10','2017-11-14 23:59:59','2017-11-14 15:00:00','2017-11-14 16:00:00','pending','normal',3200,'BGN'),(50,'Ivan','Petkanov','ivan.petkanov@gmail.com','0888888888','Some additional info here','some address','2017-11-05 15:12:05','2017-11-14 23:59:59','2017-11-14 15:00:00','2017-11-14 16:00:00','canceled','normal',3200,'BGN');
 /*!40000 ALTER TABLE `site_orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -454,7 +483,7 @@ CREATE TABLE `users` (
   `active` tinyint(4) NOT NULL DEFAULT '1',
   `avatar` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -463,7 +492,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'st2','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',1,1,'http://localhost:3000/avatar/user_1.png'),(2,'georgi','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',1,0,NULL),(3,'test','$2a$10$ZzU7rZOTPSagDgR9ltdeHO7sC7sJSRa2D.j1IRqG8w99Pm9HrVVz2',0,1,'http://localhost:3000/avatar/user_3.png'),(4,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(5,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(6,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(7,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(8,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(9,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(10,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(11,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(12,'Stefko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(13,'Petkan','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,0,'http://localhost:3000/avatar/user_13.png'),(14,'Pafkata','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',1,1,NULL),(15,'Pafkata','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',1,1,NULL),(16,'Pafkata','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(17,'Pafkata','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL);
+INSERT INTO `users` VALUES (1,'st2','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',1,1,'http://localhost:3000/avatar/user_1.png'),(2,'georgi','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',1,0,NULL),(3,'test','$2a$10$ZzU7rZOTPSagDgR9ltdeHO7sC7sJSRa2D.j1IRqG8w99Pm9HrVVz2',0,1,'http://localhost:3000/avatar/user_3.png'),(4,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(5,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(6,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(7,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(8,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(9,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(10,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(11,'Genko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(12,'Stefko','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(13,'Petkan','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,0,'http://localhost:3000/avatar/user_13.png'),(14,'Pafkata','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',1,1,NULL),(15,'Pafkata','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',1,1,NULL),(16,'Pafkata','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(17,'Pafkata','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',0,1,NULL),(18,'site','$2a$10$ZzU7rZOTPSagDgR9ltdeHOt4lB/TEoNaUdxzwMYKwQupOMlNjVmPm',1,1,NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -476,4 +505,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-11-01 22:02:59
+-- Dump completed on 2017-11-05 15:25:05

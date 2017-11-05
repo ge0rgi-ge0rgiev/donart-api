@@ -18,27 +18,27 @@ Functions.isBeforeCurrentTime = (dateObject) => {
     return dateObject < Functions.getDateObject();
 },
 
-// Log request data to log file
-Functions.requestLogger = () => {
-    const expressWinston = require('winston-express-middleware'),
-        winston = require('winston');
-    return expressWinston.logger({
-        transports: [
-            new winston.transports.File({
-                label: "Donart API request",
-                filename: config.api.logsDir + 'request.log',
-                maxsize: 2000000,
-                eol: "\n\n",
-            })
-        ],
-        meta: true, // optional: control whether you want to log the meta data about the request (default to true) 
-        msg: "HTTP {{req.method}} {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}" 
-        expressFormat: true, // Use the default Express/morgan request formatting, with the same colors. Enabling this will override any msg and colorStatus if true. Will only output colors on transports with colorize set to true 
-        colorStatus: true, // Color the status code, using the Express/morgan color palette (default green, 3XX cyan, 4XX yellow, 5XX red). Will not be recognized if expressFormat is true 
-        ignoreRoute: function (req, res) { return false; } // optional: allows to skip some log messages based on request and/or response 
-    });
+    // Log request data to log file
+    Functions.requestLogger = () => {
+        const expressWinston = require('winston-express-middleware'),
+            winston = require('winston');
+        return expressWinston.logger({
+            transports: [
+                new winston.transports.File({
+                    label: "Donart API request",
+                    filename: config.api.logsDir + 'request.log',
+                    maxsize: 2000000,
+                    eol: "\n\n",
+                })
+            ],
+            meta: true, // optional: control whether you want to log the meta data about the request (default to true) 
+            msg: "HTTP {{req.method}} {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}" 
+            expressFormat: true, // Use the default Express/morgan request formatting, with the same colors. Enabling this will override any msg and colorStatus if true. Will only output colors on transports with colorize set to true 
+            colorStatus: true, // Color the status code, using the Express/morgan color palette (default green, 3XX cyan, 4XX yellow, 5XX red). Will not be recognized if expressFormat is true 
+            ignoreRoute: function (req, res) { return false; } // optional: allows to skip some log messages based on request and/or response 
+        });
 
-};
+    };
 
 // Log the error data in log file - Middleware for server.js
 Functions.errorLoggerMiddleware = () => {
@@ -59,7 +59,7 @@ Functions.errorLoggerMiddleware = () => {
 Functions.logError = (err, req) => {
     const winston = require('winston');
 
-    let logger = new winston.Logger ({
+    let logger = new winston.Logger({
         transports: [
             new winston.transports.File({
                 label: "Donart API erros",
@@ -68,9 +68,9 @@ Functions.logError = (err, req) => {
                 level: 'debug'
             })
         ]
-     });
-     
-     logger.error(err);
+    });
+
+    logger.error(err);
 }
 
 // Move file from tmp to given destination
@@ -91,18 +91,17 @@ Functions.moveUploadedFiles = (from, to) => {
 Functions.normalizeFields = (fieldsObject) => {
     let newObject = {};
 
-    
     if (Array.isArray(fieldsObject)) {
         for (var i in fieldsObject) {
             Functions.normalizeFields(fieldsObject[i]);
         }
     }
 
-    Object.keys(fieldsObject).map(function(key, index) {
+    Object.keys(fieldsObject).map(function (key, index) {
         let newKey = key.split(/(?=[A-Z])/).join('_').toLowerCase();
         newObject[newKey] = fieldsObject[key];
-    });    
-    
+    });
+
     return newObject;
 }
 
@@ -128,7 +127,7 @@ Functions.getPaginationOptions = (req) => {
     return {
         all: getAll,
         start: (page > 1) ? (page * itemsPerPage) : 0,
-        offset: itemsPerPage 
+        offset: itemsPerPage
     }
 }
 
@@ -153,13 +152,13 @@ Functions.intToBoolFieldValues = (data, fields) => {
             // Loop the given matched fields
             for (let fieldIndex in fields) {
                 if (objField == fields[fieldIndex]) {
-                    data[index][objField] =  (data[index][objField] == 1) ? true : false;
+                    data[index][objField] = (data[index][objField] == 1) ? true : false;
                 }
             }
-            
+
             if (typeof data[index][objField] === 'object') {
                 Functions.intToBoolFieldValues(data[index][objField], fields);
-            } 
+            }
         }
     }
 
@@ -174,10 +173,10 @@ Functions.applyCbToField = (data, field, callback) => {
             if (objField == field) {
                 data[index][objField] = callback(data[index][objField]);
             }
-            
+
             if (typeof data[index][objField] === 'object') {
                 Functions.applyCbToField(data[index][objField], field, callback);
-            } 
+            }
         }
     }
 
@@ -190,6 +189,14 @@ Functions.regexMatch = (string, validation) => {
     if (regex === undefined)
         throw new errors.InvalidParameters('Invalid validation regex key.');
     return regex.test(string);
+}
+
+Functions.momentToMysqlDate = (moment) => {
+    if (Array.isArray(moment)) {
+        return moment.map(v => v.format("YYYY-MM-DD HH:mm:ss"));
+    } else {
+        return moment.format("YYYY-MM-DD HH:mm:ss");
+    }
 }
 
 
