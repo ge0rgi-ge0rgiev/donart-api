@@ -180,13 +180,7 @@ const router = require('express').Router()
              */
             router.post('/site/inquiry',
                 upload.array('attachment', 3),
-                [
-                    check('name').exists().withMessage('Required field.'),
-                    check('email').exists().withMessage('Required field.'),
-                    check('subject').exists().withMessage('Required field.'),
-                    check('text').exists().withMessage('Required field.'),
-                ],
-                middlewares.validatorResult,
+                middlewares.routes.site.inquiry,
                 SiteOrderController.inquiry
             );
 

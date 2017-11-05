@@ -255,6 +255,24 @@ module.exports = {
                 }
 
                 next();
+            },
+
+            inquiry: (req, res, next) => {
+                req.check("name").exists().withMessage('Required field.');
+                req.check("email").exists().withMessage('Required field.');
+                req.check("subject").exists().withMessage('Required field.');
+                req.check("text").exists().withMessage('Required field.');
+
+                // Email validation
+                if (functions.regexMatch(req.body.email, 'email') === false)
+                    throw new errors.InvalidParameters('Invalid email.');
+
+                var validationErrors = req.validationErrors();
+                
+                // Return validation errors
+                if (validationErrors) return next(functions.formatExpValErrors(validationErrors));
+
+                next();
             }
         },
 
