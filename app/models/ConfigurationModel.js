@@ -23,6 +23,29 @@ ConfigurationModel.getAll = () => {
 }
 
 /**
+ * Get configuration setting by setting name
+ * 
+ */
+ConfigurationModel.getBySettngName = (setting) => {
+    return new Promise((resolve, reject) => {
+        db.ready(function () {
+            let dbTable = db.table('configuration');
+            let criteria = dbTable.criteria;
+            criteria
+                .where('currency').eq(setting);
+
+            dbTable.findSingle(criteria)
+                .then(data => resolve(data))
+                .catch((err) => {
+                    functions.logError(err);
+                    reject(new errors.DatabaseError(err.sqlMessage));
+                });
+        });
+    });
+}
+
+
+/**
  * Save setting - Both Create & Update
  * 
  */
