@@ -260,12 +260,18 @@ module.exports = {
             inquiry: (req, res, next) => {
                 req.check("name").exists().withMessage('Required field.');
                 req.check("email").exists().withMessage('Required field.');
-                req.check("subject").exists().withMessage('Required field.');
+                req.check("phone").exists().withMessage('Required field.');
                 req.check("text").exists().withMessage('Required field.');
 
                 // Email validation
-                if (functions.regexMatch(req.body.email, 'email') === false)
-                    throw new errors.InvalidParameters('Invalid email.');
+                if (req.body.email)
+                    if (functions.regexMatch(req.body.email, 'email') === false)
+                        throw new errors.InvalidParameters('Invalid email.');
+
+                // Email validation
+                if (req.body.phone)
+                    if (functions.regexMatch(req.body.phone, 'phone') === false)
+                        throw new errors.InvalidParameters('Invalid phone.');
 
                 var validationErrors = req.validationErrors();
                 

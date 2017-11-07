@@ -47,7 +47,7 @@ exports.inquiry = (req, res, next) => {
     let data = {
         from: [req.body.name, ' ', req.body.email].join(''),
         to: config.mailgun.inbox,
-        subject: req.body.subject,
+        subject: ['Donart Inquiry [ Phone: ', req.body.phone, ' ]'].join(''),
         html: req.body.text
     }
 
