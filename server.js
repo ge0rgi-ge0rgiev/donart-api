@@ -7,10 +7,11 @@ const express = require('express'),
     router = require('./app/routes'), // The endpoint router
     functions = require('./app/libs/functions'),
     expressValidator = require('express-validator'),
+    cors = require('cors'),
     app = express();
 
 // Set response timeout to X seconds
-app.use( timeout('20s') );
+// app.use( timeout('20s') );
 
 // Parse "x-www-form-urlencoded" and "application/json" header request bodies
 app.use( bodyParser.urlencoded({ extended: true }) );
@@ -27,6 +28,9 @@ require('winston-logs-display')(app,
         ]
     })
 );
+
+// Enable All CORS Requests
+app.use( cors() );
 
 // Use express-validator
 app.use( expressValidator() );
