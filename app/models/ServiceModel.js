@@ -38,6 +38,7 @@ let Private = {
 
                 db.query(sql, function (error, results) {
                     if (error) return reject(error);
+                    if (results.length === 0) return reject(new errors.DatabaseError('Missing service category data.'));
                     resolve(results);
                 });
             });
@@ -52,7 +53,10 @@ let Private = {
                     .where('active').eq(1);
 
                 dbServices.find(criteria)
-                    .then(service => resolve(service))
+                    .then(service => {
+                        if (service.length === 0) return reject(new errors.DatabaseError('Missing service data.'));
+                        resolve(service);
+                    })
                     .catch(err => reject(err));
             });
         });
@@ -219,7 +223,8 @@ ServiceModel.getServices = () => {
                 .then(services => resolve(services))
                 .catch((err) => {
                     functions.logError(err);
-                    reject(new errors.DatabaseError(err.sqlMessage));
+                    let errMsg = (err.name !== undefined) ? err.message : err.sqlMessage;
+                    reject(new errors.DatabaseError(errMsg));
                 });
         });
     });
