@@ -22,13 +22,13 @@ exports.login = (req, res, next) => {
         })
         .then((user) => {
             // Check for previously created user session
-            return SessionModel.getSessionData({ userId: user.id })
-                .then(session => ({ session, user }));
+            res.locals.user = user;
+            return SessionModel.getSessionData({ userId: user.id });
         })
-        .then((data) => {
+        .then((session) => {
             // If there is a created session, update the session expiration and return the session object
-            if (data.session) {
-                return SessionModel.updateExpirationTime(data.session)
+            if (session) {
+                return SessionModel.updateExpirationTime(session)
             } else {
                 // We have to create new session object, that`s why we need the user details
                 const UIDGenerator = new require('uid-generator');
@@ -36,7 +36,7 @@ exports.login = (req, res, next) => {
 
                 // Create new session and return the session object
                 return SessionModel.saveSession({
-                    user_id: data.user.id,
+                    user_id: res.locals.user.id,
                     auth_token: uidgen.generateSync(),
                     refresh_token: uidgen.generateSync(),
                     expiration: functions.getDateObject(config.api.sessionDuration)
@@ -49,7 +49,9 @@ exports.login = (req, res, next) => {
             return UserModel.getUserById(session.userId);
         })
         .then(user => {
+            delete returnData.id;
             returnData.avatar = user.avatar;
+            returnData.isAdmin = user.isAdmin;
             res.sendSuccess(returnData);
         })
         .catch(err => next(err));

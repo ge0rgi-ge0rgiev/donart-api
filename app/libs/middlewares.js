@@ -16,7 +16,7 @@ module.exports = {
         let SessionModel = require('../models/SessionModel');
 
         // Get session data by authToken, update the expiration and proceed
-        SessionModel.getSessionByAuthToken(req, res)
+        SessionModel.getSessionByAuthToken(req.headers.authtoken)
             .then(session => SessionModel.updateExpirationTime(session))
             .then((session) => {
                 // Save session for further usage
@@ -30,13 +30,10 @@ module.exports = {
      * Admin only check
      */
     adminOnlyCheck: (req, res, next) => {
-        let UserModel = require('../models/UserModel');
-
-        UserModel.getUserById(res.locals.session.userId)
-            .then((user) => {
-                if (user.isAdmin === 0) {
-                    return next(new errors.Unauthorized('Admin access only.'));
-                }
+        const UserModel = require('../models/UserModel');
+        UserModel.isAdmin(res.locals.session.userId)
+            .then(status => {
+                if (status === false) return next(new errors.Unauthorized('Admin access only.'));
                 next();
             });
     },
@@ -185,6 +182,21 @@ module.exports = {
                 
                 next();
             },
+
+            getAll: (req, res, next) => {
+                if (req.body.all && req.body.all === "true") {
+                    const UserModel = require('../models/UserModel');
+                    UserModel.isAdmin(res.locals.session.userId)
+                        .then(status => {
+                            if (status === false) return next(new errors.Unauthorized('Admin access only.'));
+                            req.body.all = true;
+                            next();
+                        });
+                } else {
+                    req.body.all = false;
+                    next();
+                }
+            }
 
         },
 

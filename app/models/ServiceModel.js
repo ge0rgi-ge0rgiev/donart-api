@@ -28,13 +28,14 @@ let Private = {
 
     },
 
-    getCategories: (onlyParent) => {
+    getCategories: (all, onlyParent) => {
         onlyParent = (onlyParent === undefined) ? 'NOT' : '';
         return new Promise((resolve, reject) => {
             db.ready(function () {
                 let sql = 'SELECT * FROM `service_categories` WHERE ';
-                sql += '`active` = 1 AND ';
                 sql += '`parent_id` is ' + onlyParent + ' NULL';
+
+                if (!all) sql += ' AND `active` = 1  ';
 
                 db.query(sql, function (error, results) {
                     if (error) return reject(error);
@@ -45,12 +46,13 @@ let Private = {
         });
     },
 
-    getServices: () => {
+    getServices: (all) => {
         return new Promise((resolve, reject) => {
             db.ready(function () {
                 let dbServices = db.table('services');
-                let criteria = dbServices.criteria
-                    .where('active').eq(1);
+                let criteria = dbServices.criteria;
+
+                if (!all) criteria.where('active').eq(1);
 
                 dbServices.find(criteria)
                     .then(service => {
@@ -94,6 +96,7 @@ let Private = {
         // Add sub categories to main categories
         for (var i in subCatPids) {
             let serviceIndex = mainCatsIds.indexOf(subCatPids[i]);
+            if (serviceIndex === -1) continue;
             serviceData[serviceIndex].subCategories = serviceData[serviceIndex].subCategories || [];
             serviceData[serviceIndex].subCategories.push(subCategories[i]);
         }
@@ -203,18 +206,18 @@ ServiceModel.saveService = (service) => {
 * Get service categories and services
 * 
 */
-ServiceModel.getServices = () => {
+ServiceModel.getServices = (all) => {
     let data = {};
     return new Promise((resolve, reject) => {
         db.ready(function () {
-            Private.getCategories(true)
+            Private.getCategories(all, true)
                 .then((parentCategories) => {
                     data.parentCategories = parentCategories;
-                    return Private.getCategories();
+                    return Private.getCategories(all);
                 })
                 .then((subCategories) => {
                     data.subCategories = subCategories;
-                    return Private.getServices();
+                    return Private.getServices(all);
                 })
                 .then((services) => {
                     data.services = services;

@@ -134,7 +134,10 @@ const router = require('express').Router()
             /**
              * Get all services
              */
-            router.post('/services/getAll',ServiceController.getAll);
+            router.post('/services/getAll',
+                middlewares.routes.services.getAll,    
+                ServiceController.getAll
+            );
 
 
     /**

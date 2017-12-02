@@ -154,6 +154,14 @@ UserModel.toggleActiveState = (userId) => {
     });
 }
 
-
+UserModel.isAdmin = (userId) => {
+    return new Promise((resolve, reject) => {
+        UserModel.getUserById(userId)
+            .then(user => {
+                if (user && user.isAdmin === true) resolve (true);
+                resolve(false);
+            });
+    })
+}
 
 module.exports = UserModel;

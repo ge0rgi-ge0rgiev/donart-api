@@ -50,7 +50,7 @@ exports.saveService = (req, res, next) => {
  * 
  */
 exports.getAll = (req, res, next) => {
-    ServiceModel.getServices()
+    ServiceModel.getServices(req.body.all)
         .then(services => res.sendSuccess(services))
         .catch(err => next(err));
 }

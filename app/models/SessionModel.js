@@ -68,17 +68,17 @@ SessionModel.saveSession = (session) => {
  * Get session by authentication token.
  * 
  */
-SessionModel.getSessionByAuthToken = (req, res) => {
+SessionModel.getSessionByAuthToken = (authToken) => {
     return new Promise((resolve, reject) => {
         // Get authentication token from http headers
-        let _authToken = req.headers.authtoken || undefined;
+        // let _authToken = req.headers.authtoken || undefined;
 
         // If there`s no token supplied
-        if (!_authToken)
+        if (authToken === undefined)
             return reject(new errors.Unauthorized('Authentication token is required.'));
 
         // Get session object
-        SessionModel.getSessionData({ authToken: _authToken })
+        SessionModel.getSessionData({ authToken: authToken })
             .then(function (session) {
                 // If there`s no session associated with the token
                 if (!session)
