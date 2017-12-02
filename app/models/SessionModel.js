@@ -17,6 +17,10 @@ let Private = {
         let paramKey = Object.keys(params)[0];
         return db.table('session').criteria
             .where(whereFields[paramKey]).eq(params[paramKey]);
+    },
+
+    isValidSession: (session) => {
+        return functions.isBeforeCurrentTime(session.expiration);
     }
 
 };
@@ -81,7 +85,7 @@ SessionModel.getSessionByAuthToken = (req, res) => {
                     return reject(new errors.Unauthorized('Invalid authentication token.'));
 
                 // Check for session expiration date
-                if (functions.isBeforeCurrentTime(session.expiration))
+                if (!Private.isValidSession(session))
                     return reject(new errors.InvalidParameters('Your session has expired.'));
 
                 resolve(session);
@@ -102,7 +106,7 @@ SessionModel.updateExpirationTime = (session) => {
         // Update the expiration time of the session
         session.expiration = functions.getDateObject(config.api.sessionDuration);
         SessionModel.saveSession(session)
-            .then(session => resolve(session))
+            .then(resolve(session))
             .catch((err) => {
                 functions.logError(err);
                 reject(new errors.DatabaseError(err.sqlMessage));

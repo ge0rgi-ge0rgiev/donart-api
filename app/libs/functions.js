@@ -1,21 +1,22 @@
 const config = require('../../config'),
     errors = require('./response-errors'),
-    Promise = require('promise');
+    Promise = require('promise')
+    Moment = require('moment');
 
 let Functions = {};
 
 // Return Date object
 Functions.getDateObject = (plusTimeInseconds) => {
-    let date = new Date();
+    let date = new Moment();
     if (plusTimeInseconds !== undefined) {
-        date.setSeconds(date.getSeconds() + plusTimeInseconds);
+        date.add({seconds: plusTimeInseconds});
     }
-    return date;
+    return date.toDate();
 }
 
 // Return bool
 Functions.isBeforeCurrentTime = (dateObject) => {
-    return dateObject < Functions.getDateObject();
+    return Moment().isBefore(Moment(dateObject));
 },
 
     // Log request data to log file
@@ -189,7 +190,7 @@ Functions.regexMatch = (string, validation) => {
     if (regex === undefined)
         throw new errors.InvalidParameters('Invalid validation regex key.');
     return regex.test(string);
-}
+};
 
 Functions.momentToMysqlDate = (moment) => {
     if (Array.isArray(moment)) {
@@ -197,6 +198,11 @@ Functions.momentToMysqlDate = (moment) => {
     } else {
         return moment.format("YYYY-MM-DD HH:mm:ss");
     }
+};
+
+Functions.formatDate = (date) => {
+    if (!Moment.isMoment(date)) date = new Moment(date);
+    return Functions.momentToMysqlDate(date);
 }
 
 

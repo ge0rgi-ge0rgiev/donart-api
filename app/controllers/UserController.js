@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt'),
     errors = require('../libs/response-errors'),
     UserModel = require('../models/UserModel');
 
-
+    
 /**
  * API token authentication
  * 
@@ -23,7 +23,7 @@ exports.login = (req, res, next) => {
         .then((user) => {
             // Check for previously created user session
             return SessionModel.getSessionData({ userId: user.id })
-                .then((session) => { return {user, session} });
+                .then(session => ({ session, user }));
         })
         .then((data) => {
             // If there is a created session, update the session expiration and return the session object
@@ -44,6 +44,7 @@ exports.login = (req, res, next) => {
             }
         })
         .then(session => {
+            session.expiration = functions.formatDate(session.expiration);
             returnData = session;
             return UserModel.getUserById(session.userId);
         })
