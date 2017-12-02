@@ -70,8 +70,7 @@ exports.inquiry = (req, res, next) => {
     }
 
     mailgun.messages().send(data, function (err, body) {
-        if (err)
-            return next(err);
+        if (err) return next(err);
         res.sendSuccess(body);
     });
 }

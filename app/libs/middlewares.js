@@ -280,7 +280,7 @@ module.exports = {
                     if (functions.regexMatch(req.body.email, 'email') === false)
                         throw new errors.InvalidParameters('Invalid email.');
 
-                // Email validation
+                // Phone validation
                 if (req.body.phone)
                     if (functions.regexMatch(req.body.phone, 'phone') === false)
                         throw new errors.InvalidParameters('Invalid phone.');
