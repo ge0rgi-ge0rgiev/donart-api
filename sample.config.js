@@ -12,16 +12,17 @@ config.api = {
         //TODO: Store in database
         workingTime: {
             workDays: {
-                from: 8,
-                to: 21,
+                open: 8,
+                closed: 19,
             },
             saturday: {
-                from: 9,
-                to: 16
+                open: 8,
+                closed: 15
             },
         },
-        diapason: 3600, // 1 hour in seconds
+        diapason: 1, // Hours
         maxPickDateDays: 30, // The roof day is 30 days after today
+        ordersPerDiapason: 3
     }
 };
 
@@ -71,6 +72,8 @@ config.protectedEndpoints = [
     '/site/createOrder',
     '/site/changeOrderStatus',
     '/site/getAvailableHours',
+
+    '/orders/createOrder'
 ];
 
 // Regex patterns

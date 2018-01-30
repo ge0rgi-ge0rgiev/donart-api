@@ -13,11 +13,11 @@ config.api = {
         workingTime: {
             workDays: {
                 open: 8,
-                closed: 21,
+                closed: 19,
             },
             saturday: {
-                open: 9,
-                closed: 16
+                open: 8,
+                closed: 15
             },
         },
         diapason: 1, // Hours
@@ -77,6 +77,8 @@ config.protectedEndpoints = [
     '/site/createOrder',
     '/site/changeOrderStatus',
     '/site/getAvailableHours',
+
+    '/orders/createOrder'
 ];
 
 // Regex patterns

@@ -111,20 +111,20 @@ let Private = {
                 return reject(new errors.InvalidParameters('Invalid dates: timeFrom is after timeTo.'));
 
             // X hour diapason check between timeFrom and timeTo
-            if (moment(timeFrom).add(cnf.diapason, 'hour').isSame(timeTo) === false)
-                return reject(new errors.InvalidParameters('Invalid dates: invalid diapason between timeFrom and timeTo.'));
+            // if (moment(timeFrom).add(cnf.diapason, 'hour').isSame(timeTo) === false)
+            //     return reject(new errors.InvalidParameters('Invalid dates: invalid diapason between timeFrom and timeTo.'));
 
             // pickDate, timeFrom and timeTo dates are in the same day
             if ([pickDate.date(), timeFrom.date(), timeTo.date()].every( (val, i, arr) => val == arr[0] ) === false)
                 return reject(new errors.InvalidParameters('Invalid dates: pickDate, timeFrom and timeTo must be in one day.'));
             
             // Min constraint for pickDate in days
-            if (pickDate.date() < moment().add(1, 'day').date())
-                return reject(new errors.InvalidParameters('Invalid dates: pickDate, timeFrom and timeTo must be in one day.'));
+            if (pickDate < moment().add(1, 'day'))
+                return reject(new errors.InvalidParameters('Invalid dates: pickDate can be at least by tommorow.'));
             
             // Max constraint for pickDate in days
             if (pickDate.isAfter(moment().add(cnf.maxPickDateDays, 'day')))
-                return reject(new errors.InvalidParameters('Invalid dates: pickDate, timeFrom and timeTo must be in one day.'));
+                return reject(new errors.InvalidParameters('Invalid dates: pickDate can be max ' + cnf.maxPickDateDays + ' days by today.'));
 
 
             let weekDays;
@@ -140,51 +140,82 @@ let Private = {
                 closed = cnf.workingTime[weekDays].closed;
 
             // Check Open time
-            if (timeFrom.hours() < open || timeTo.hours() < (open + cnf.diapason))
+            // if (timeFrom.hours() < open || timeTo.hours() < (open + cnf.diapason))
+            if (timeFrom.hours() < open)
                 return reject(new errors.InvalidParameters('Invalid dates: Issue with Open time.'));
 
             // Check Closed time
-            if (timeTo.hours() > closed || ( (timeFrom.hours() + cnf.diapason) < (open + cnf.diapason) ))
+            // if (timeTo.hours() > closed || ( (timeFrom.hours() + cnf.diapason) < (open + cnf.diapason) ))
+            if (timeTo.hours() > closed)
                 return reject(new errors.InvalidParameters('Invalid dates: Issue with Closed time.'));
         
             let _pickDate = functions.momentToMysqlDate(moment(pickDate).endOf('day')),
                 _timeFrom = functions.momentToMysqlDate(moment(timeFrom));
 
-            Private.availableBookingCheck(_pickDate, _timeFrom)
-                .then(result => {
-                    if (result !== null)
-                        if (result.bookings >= cnf.ordersPerDiapason)
-                            return reject(new errors.InvalidParameters('Invalid dates: This time diapason is full.'));
+            if (order.type === 'fast')
+                return resolve();
 
-                    if (order.type === 'fast')
-                        return resolve();
+            Promise.all(
+                order.products.map((product, index) => {
+                    return new Promise((resolve, reject) => {
+                        ServiceModel.getServiceById(product.serviceId)
+                            .then(service => {
+                                if (service.orderLimit < product.count)
+                                    reject(new errors.InvalidParameters(['Invalid calculations (orderLimit) in order.products[', index, ']'].join('')));
 
-                    Promise.all(
-                        order.products.map((product, index) => {
-                            return new Promise((resolve, reject) => {
-                                ServiceModel.getServiceById(product.serviceId)
-                                    .then(service => {
-                                        if (service.orderLimit < product.count)
-                                            reject(new errors.InvalidParameters(['Invalid calculations (orderLimit) in order.products[', index, ']'].join('')));
-        
-                                        let totalAmount = product.count * service.price;
-                                        
-                                        if (totalAmount != product.totalAmount)
-                                            reject(new errors.InvalidParameters(['Invalid calculations (totalAmount) in order.products[', index, ']'].join('')));
-                                        
-                                        resolve(totalAmount);
-                                    })
+                                let totalAmount = product.count * service.price;
+                                
+                                if (totalAmount != product.totalAmount)
+                                    reject(new errors.InvalidParameters(['Invalid calculations (totalAmount) in order.products[', index, ']'].join('')));
+                                
+                                resolve(totalAmount);
                             })
-                        })
-                    )
-                    .then(totalProductAmounts => {
-                        if (order.totalAmount != totalProductAmounts.reduce((sum, value) => sum + value, 0))
-                            return reject(new errors.InvalidParameters('Invalid calculations (totalAmount) in order'));
                     })
-                    .then(() => resolve())
-                    .catch(err => reject(err))
                 })
-                .catch(err => reject(err))
+            )
+            .then(totalProductAmounts => {
+                if (order.totalAmount != totalProductAmounts.reduce((sum, value) => sum + value, 0))
+                    return reject(new errors.InvalidParameters('Invalid calculations (totalAmount) in order'));
+            })
+            .then(() => resolve())
+            .catch(err => reject(err));
+            
+
+            // Private.availableBookingCheck(_pickDate, _timeFrom)
+            //     .then(result => {
+            //         if (result !== null)
+            //             if (result.bookings >= cnf.ordersPerDiapason)
+            //                 return reject(new errors.InvalidParameters('Invalid dates: This time diapason is full.'));
+
+            //         if (order.type === 'fast')
+            //             return resolve();
+
+            //         Promise.all(
+            //             order.products.map((product, index) => {
+            //                 return new Promise((resolve, reject) => {
+            //                     ServiceModel.getServiceById(product.serviceId)
+            //                         .then(service => {
+            //                             if (service.orderLimit < product.count)
+            //                                 reject(new errors.InvalidParameters(['Invalid calculations (orderLimit) in order.products[', index, ']'].join('')));
+        
+            //                             let totalAmount = product.count * service.price;
+                                        
+            //                             if (totalAmount != product.totalAmount)
+            //                                 reject(new errors.InvalidParameters(['Invalid calculations (totalAmount) in order.products[', index, ']'].join('')));
+                                        
+            //                             resolve(totalAmount);
+            //                         })
+            //                 })
+            //             })
+            //         )
+            //         .then(totalProductAmounts => {
+            //             if (order.totalAmount != totalProductAmounts.reduce((sum, value) => sum + value, 0))
+            //                 return reject(new errors.InvalidParameters('Invalid calculations (totalAmount) in order'));
+            //         })
+            //         .then(() => resolve())
+            //         .catch(err => reject(err))
+            //     })
+            //     .catch(err => reject(err))
         })
     },
 

@@ -4,38 +4,38 @@ const db = require('../libs/database'),
     functions = require('../libs/functions'),
     config = require('../../config');
     errors = require('../libs/response-errors'),
-    Promise = require('promise');
+    Promise = require('promise'),
 
-let Private = {
+    Private = {
 
-    getCriteriaObject: (params) => {
-        let whereFields = {
-            authToken: "auth_token",
-            refreshToken: "refresh_token",
-            userId: "user_id"
+        getCriteriaObject: (params) => {
+            const whereFields = {
+                authToken: "auth_token",
+                refreshToken: "refresh_token",
+                userId: "user_id"
+            }, 
+            paramKey = Object.keys(params)[0];
+            return db.table('session').criteria
+                .where(whereFields[paramKey]).eq(params[paramKey]);
+        },
+
+        isValidSession: (session) => {
+            return functions.isBeforeCurrentTime(session.expiration);
         }
-        let paramKey = Object.keys(params)[0];
-        return db.table('session').criteria
-            .where(whereFields[paramKey]).eq(params[paramKey]);
+
     },
 
-    isValidSession: (session) => {
-        return functions.isBeforeCurrentTime(session.expiration);
-    }
-
-};
-
-let SessionModel = {};
+    SessionModel = {};
 
 
 /**
- * Get session data by authentication token
- * 
- */
+* Get session data by authentication token
+* 
+*/
 SessionModel.getSessionData = (params) => {
     return new Promise((resolve, reject) => {
         db.ready(function () {
-            let criteria = Private.getCriteriaObject(params);
+            const criteria = Private.getCriteriaObject(params);
             db.table('session').findSingle(criteria)
                 .then(session => resolve(session))
                 .catch((err) => {
@@ -48,37 +48,34 @@ SessionModel.getSessionData = (params) => {
 
 
 /**
- * Save session. Used for both create and update session.
- * 
- */
+* Save session. Used for both create and update session.
+* 
+*/
 SessionModel.saveSession = (session) => {
-    return new Promise((resolve, reject) => {
-        db.ready(function () {
-            db.table('session').save(session)
-                .then(result => resolve(result))
-                .catch((err) => {
-                    functions.logError(err);
-                    reject(new errors.DatabaseError(err.sqlMessage));
-                });
-        });
+return new Promise((resolve, reject) => {
+    db.ready(function () {
+        db.table('session').save(session)
+            .then(result => resolve(result))
+            .catch((err) => {
+                functions.logError(err);
+                reject(new errors.DatabaseError(err.sqlMessage));
+            });
     });
+});
 }
 
 /**
- * Get session by authentication token.
- * 
- */
+* Get session by authentication token.
+* 
+*/
 SessionModel.getSessionByAuthToken = (authToken) => {
     return new Promise((resolve, reject) => {
-        // Get authentication token from http headers
-        // let _authToken = req.headers.authtoken || undefined;
-
         // If there`s no token supplied
-        if (authToken === undefined)
+        if (!authToken)
             return reject(new errors.Unauthorized('Authentication token is required.'));
 
         // Get session object
-        SessionModel.getSessionData({ authToken: authToken })
+        SessionModel.getSessionData({ authToken })
             .then(function (session) {
                 // If there`s no session associated with the token
                 if (!session)
@@ -98,9 +95,9 @@ SessionModel.getSessionByAuthToken = (authToken) => {
 }
 
 /**
- * Update expiration session time
- * 
- */
+* Update expiration session time
+* 
+*/
 SessionModel.updateExpirationTime = (session) => {
     return new Promise((resolve, reject) => {
         // Update the expiration time of the session
