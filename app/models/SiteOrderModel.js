@@ -119,7 +119,7 @@ let Private = {
                 return reject(new errors.InvalidParameters('Invalid dates: pickDate, timeFrom and timeTo must be in one day.'));
             
             // Min constraint for pickDate in days
-            if (pickDate < moment().add(1, 'day'))
+            if (pickDate.endOf('day') < moment().add(1, 'day'))
                 return reject(new errors.InvalidParameters('Invalid dates: pickDate can be at least by tommorow.'));
             
             // Max constraint for pickDate in days
