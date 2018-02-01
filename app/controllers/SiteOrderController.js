@@ -54,7 +54,7 @@ exports.createOrder = (req, res, next) => {
 
             mailgun.sendMail({
                 to: order.email,
-                cc: 'orders@donart.com',
+                cc: 'orders@donart.bg',
                 from: ['Donart Corporation ', ' ', 'orders@donart.com'].join(''),
                 subject: ['Donart - Details for Order #', order.id].join(''),
                 html: html,
