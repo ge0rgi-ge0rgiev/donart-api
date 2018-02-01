@@ -17,6 +17,8 @@ exports.sendMail = (params) => {
         html: params.html
     }
 
+    if (params.cc) data.cc = params.cc;
+
     let attachments = [];
     if (params.files) {
         for (var i in params.files) {

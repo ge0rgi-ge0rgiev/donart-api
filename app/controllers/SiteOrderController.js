@@ -14,11 +14,12 @@ exports.createOrder = (req, res, next) => {
                         return new Promise((resolve, reject) => {
                             ServiceModel.getServiceById(product.serviceId).then(service => {
                                 order.products[index].name = service.translation.bg;
+                                order.products[index].price = service.price;
                                 resolve();
                             });
                         });
                     })
-                ).then((asd) => {
+                ).then(() => {
                      return order 
                 });
             } else {
@@ -26,21 +27,34 @@ exports.createOrder = (req, res, next) => {
             }
         })
         .then(order => {
-            let html = 'Fast order.';
+            var html = `Здравейте,<br />
+                Вашата поръчка беше приета успешно. Наш куриер ще ви посети на посочените от вас време и място за да я вземе и опише.<br />
+                <br />`;
 
             if (order.products) {
-                html = order.products.map(product => {
-                    return [product.count, ' X ', product.name, ' - ', product.totalAmount, 'лв '].join('');                     
+                let text = order.products.map(product => {
+                    return [product.name, ' ', product.count, ' броя Х ', product.price, 'лева = ', product.totalAmount, ' лева<br/>'].join('');                     
                 });
 
-                html.push([]);
-                html.push(['Общо: ', order.totalAmount, 'лв'].join(''));
-
-                html = html.join('\n');
+                text.push(['Обща сума: ', order.totalAmount, 'лв<br/>'].join(''));
+                text = text.join('');
+                
+                html = `Здравейте,<br/>
+                    Вашата поръчка беше приета успешно. Наш куриер ще ви посети на посочените от вас време и място за да я вземе.<br />
+                    <br/>
+                    ${text}
+                    <br/>`;
             }
+
+            html += `Лек и успешен ден!<br/>
+                От екипа на химическо чистене Дон Арт<br/>
+                0878969630<br/>
+                <a href="mailto:info@donart.bg">info@donart.bg</a><br/>
+                <a href="http://www.donart.bg">www.donart.bg</a>`;
 
             mailgun.sendMail({
                 to: order.email,
+                cc: 'orders@donart.com',
                 from: ['Donart Corporation ', ' ', 'orders@donart.com'].join(''),
                 subject: ['Donart - Details for Order #', order.id].join(''),
                 html: html,
