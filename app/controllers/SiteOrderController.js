@@ -54,7 +54,7 @@ exports.createOrder = (req, res, next) => {
 
             mailgun.sendMail({
                 to: order.email,
-                cc: 'orders@donart.bg',
+                cc: config.mailgun.inboxOrders,
                 from: ['Donart Corporation ', ' ', 'orders@donart.bg'].join(''),
                 subject: ['Donart - Details for Order #', order.id].join(''),
                 html: html,
@@ -93,7 +93,7 @@ exports.getAvailableHours = (req, res, next) => {
 
 exports.inquiry = (req, res, next) => {
     mailgun.sendMail({
-        to: config.mailgun.inbox,
+        to: config.mailgun.inboxInfo,
         from: [req.body.name, ' ', req.body.email].join(''),
         subject: ['Donart Inquiry [ Phone: ', req.body.phone, ' ]'].join(''),
         html: req.body.text,

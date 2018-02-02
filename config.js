@@ -88,7 +88,8 @@ config.regex = {
 };
 
 config.mailgun = {
-    inbox: "georgi.georgiev.vn@gmail.com, g.georgiev.work@gmail.com, info@donart.bg, anton.a.dimitrov@gmail.com",
+    inboxInfo: "info@donart.bg, anton.a.dimitrov@gmail.com",
+    inboxOrders: "orders@donart.bg, anton.a.dimitrov@gmail.com",
     domain: "www.donart.bg",
     apiKey: "key-2fa8e0942e94b0bdef0c46343620e20b"
 }
