@@ -3,7 +3,9 @@ const config = require('../../config'),
     errors = require('../libs/response-errors'),
     SiteOrderModel = require('../models/SiteOrderModel'),
     ServiceModel = require('../models/ServiceModel'),
-    mailgun = require('../libs/mailgun');
+    mailgun = require('../libs/mailgun'),
+    emailTemplates = require('../libs/email-template'),
+    moment = require('moment');
 
 exports.createOrder = (req, res, next) => {
     SiteOrderModel.createOrder(req.body)
@@ -27,41 +29,47 @@ exports.createOrder = (req, res, next) => {
             }
         })
         .then(order => {
-            var html = `Здравейте,<br />
-                Вашата поръчка беше приета успешно. Наш куриер ще ви посети на посочените от вас време и място за да я вземе и опише.<br />
-                <br />`;
-
-            if (order.products) {
-                let text = order.products.map(product => {
-                    return [product.name, ' ', product.count, ' броя Х ', product.price, 'лева = ', product.totalAmount, ' лева<br/>'].join('');                     
+            let template = (order.products) ? 'normal-order' : 'fast-order';
+            order.date = moment(order.pickDate).format('D.MM.YYYY');
+            order.from = moment(order.timeFrom).format('HH:mm');
+            order.to = moment(order.timeTo).format('HH:mm');
+            emailTemplates.getTemplate(template, order)
+                .then(html => {
+                    return mailgun.sendMail({
+                        to: order.email,
+                        cc: config.mailgun.inboxOrders,
+                        from: ['Химическо Чистене - ДонАрт ', ' ', 'orders@donart.bg'].join(''),
+                        subject: ['ДонАрт - Детайли за поръчка #', order.id].join(''),
+                        html,
+                    })
+                }).then((data) => {
+                    res.sendSuccess(data);
                 });
 
-                text.push(['Обща сума: ', order.totalAmount, 'лв<br/>'].join(''));
-                text = text.join('');
+            // var html = `Здравейте,<br />
+            //     Вашата поръчка беше приета успешно. Наш куриер ще ви посети на посочените от вас време и място за да я вземе и опише.<br />
+            //     <br />`;
+
+            // if (order.products) {
+            //     let text = order.products.map(product => {
+            //         return [product.name, ' ', product.count, ' броя Х ', product.price, 'лева = ', product.totalAmount, ' лева<br/>'].join('');                     
+            //     });
+
+            //     text.push(['Обща сума: ', order.totalAmount, 'лв<br/>'].join(''));
+            //     text = text.join('');
                 
-                html = `Здравейте,<br/>
-                    Вашата поръчка беше приета успешно. Наш куриер ще ви посети на посочените от вас време и място за да я вземе.<br />
-                    <br/>
-                    ${text}
-                    <br/>`;
-            }
+            //     html = `Здравейте,<br/>
+            //         Вашата поръчка беше приета успешно. Наш куриер ще ви посети на посочените от вас време и място за да я вземе.<br />
+            //         <br/>
+            //         ${text}
+            //         <br/>`;
+            // }
 
-            html += `Лек и успешен ден!<br/>
-                От екипа на химическо чистене Дон Арт<br/>
-                0878969630<br/>
-                <a href="mailto:info@donart.bg">info@donart.bg</a><br/>
-                <a href="http://www.donart.bg">www.donart.bg</a>`;
-
-            mailgun.sendMail({
-                to: order.email,
-                cc: config.mailgun.inboxOrders,
-                from: ['Donart Corporation ', ' ', 'orders@donart.bg'].join(''),
-                subject: ['Donart - Details for Order #', order.id].join(''),
-                html: html,
-            })
-            .then((data) => {
-                res.sendSuccess(order)
-            })
+            // html += `Лек и успешен ден!<br/>
+            //     От екипа на химическо чистене Дон Арт<br/>
+            //     0878969630<br/>
+            //     <a href="mailto:info@donart.bg">info@donart.bg</a><br/>
+            //     <a href="http://www.donart.bg">www.donart.bg</a>`;
         })
         .catch(err => next(err)); 
 }
