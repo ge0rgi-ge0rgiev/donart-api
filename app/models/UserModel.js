@@ -36,13 +36,13 @@ let Private = {
         return user;
     },
 
-}
+};
 
 let UserModel = {};
 
 /**
  * Get user by credentials
- * 
+ *
  */
 UserModel.getUserByCredentials = (userId, password) => {
     return new Promise((resolve, reject) => {
@@ -60,12 +60,12 @@ UserModel.getUserByCredentials = (userId, password) => {
                 });
         });
     });
-}
+};
 
 
 /**
  * Get user by userId
- * 
+ *
  */
 UserModel.getUserById = (userId) => {
     return new Promise((resolve, reject) => {
@@ -85,11 +85,11 @@ UserModel.getUserById = (userId) => {
                 });
         });
     });
-}
+};
 
 /**
  * Get user by userId
- * 
+ *
  */
 UserModel.getUsers = (pagination) => {
     return new Promise((resolve, reject) => {
@@ -111,13 +111,12 @@ UserModel.getUsers = (pagination) => {
                 });
         });
     });
-}
-
+};
 
 
 /**
  * Save user. Used for both create and update user.
- * 
+ *
  */
 UserModel.save = (user) => {
     user = Private.normalizeData(user);
@@ -131,37 +130,51 @@ UserModel.save = (user) => {
                 });
         });
     });
-}
+};
 
 /**
  * Toggle active state.
- * 
+ *
  */
 UserModel.toggleActiveState = (userId) => {
     return new Promise((resolve, reject) => {
         UserModel.getUserById(userId)
-        .then(user => {
-            return UserModel.save({
-                id: user.id,
-                active: (user.active === true) ? "false" : "true"
+            .then(user => {
+                return UserModel.save({
+                    id: user.id,
+                    active: (user.active === true) ? "false" : "true"
+                });
+            })
+            .then(user => resolve(user))
+            .catch((err) => {
+                functions.logError(err);
+                reject(new errors.DatabaseError(err.sqlMessage));
             });
-        })
-        .then(user => resolve(user))
-        .catch((err) => {
-            functions.logError(err);
-            reject(new errors.DatabaseError(err.sqlMessage));
-        });
     });
-}
+};
 
 UserModel.isAdmin = (userId) => {
     return new Promise((resolve, reject) => {
         UserModel.getUserById(userId)
             .then(user => {
-                if (user && user.isAdmin === true) resolve (true);
+                if (user && user.isAdmin === true) resolve(true);
                 resolve(false);
             });
     })
-}
+};
+
+UserModel.getMe = (session) => {
+    return UserModel.getUserById(session.userId)
+        .then(user => ({
+                id: user.id,
+                name: user.name,
+                isAdmin: (user.is_admin) ? true : false,
+                isActive: (user.active) ? true : false,
+                avatar: user.avatar,
+                authToken: session.authToken
+            })
+        );
+};
+
 
 module.exports = UserModel;

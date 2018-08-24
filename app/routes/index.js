@@ -1,13 +1,11 @@
-
-const router = require('express').Router()
+const router = require('express').Router(),
     config = require('../../config'),
-
     // File upload
     multer = require('multer'),
-    upload = multer({ dest: config.api.uploadDir.main}),
+    upload = multer({dest: config.api.uploadDir.main}),
 
     middlewares = require('../libs/middlewares'),
-    { check, validationResult } = require('express-validator/check')
+    {check, validationResult} = require('express-validator/check'),
 
     ApiController = require('../controllers/ApiController'),
     UserController = require('../controllers/UserController'),
@@ -18,276 +16,281 @@ const router = require('express').Router()
     ConfigurationController = require('../controllers/ConfigurationController'),
     TestController = require('../controllers/TestController');
 
-    /**
-     * User ednpoints
-     */
+/**
+ * User ednpoints
+ */
 
-            /**
-             * Authenticate user with userId and password
-             * 
-             */
-            router.post('/users/login',
-                [
-                    check('userId')
-                        .exists().withMessage('User ID is required.'),
-                    check('password')
-                        .exists().withMessage('Password is required.')
-                        .isLength({ min: 3 }).withMessage('Passwords must be at least 3 chars long.'),
-                ],
-                middlewares.validatorResult,
-                middlewares.routes.users.login,
-                UserController.login
-            );
+/**
+ * Authenticate user with userId and password
+ *
+ */
+router.post('/users/login',
+    [
+        check('userId')
+            .exists().withMessage('User ID is required.'),
+        check('password')
+            .exists().withMessage('Password is required.')
+            .isLength({min: 3}).withMessage('Passwords must be at least 3 chars long.'),
+    ],
+    middlewares.validatorResult,
+    middlewares.routes.users.login,
+    UserController.login
+);
 
-            /**
-             * Refresh user session by Refresh Token
-             * 
-             */
-            router.post('/users/refreshSession',
-                [
-                    check('refreshToken')
-                        .exists().withMessage('Refresh token header parameter is required for update the session.')
-                        .isLength({ min: 50, max: 50 }).withMessage('Invalid refreshToken.'),
-                ],
-                middlewares.validatorResult,
-                UserController.refreshSession
-            );
+/**
+ * Refresh user session by Refresh Token
+ *
+ */
+router.post('/users/refreshSession',
+    [
+        check('refreshToken')
+            .exists().withMessage('Refresh token header parameter is required for update the session.')
+            .isLength({min: 50, max: 50}).withMessage('Invalid refreshToken.'),
+    ],
+    middlewares.validatorResult,
+    UserController.refreshSession
+);
 
-            /**
-             * Save user - Create & Update
-             * 
-             */
-            router.post('/users/save',
-                middlewares.adminOnlyCheck,
-                upload.single('avatar'),
-                middlewares.routes.users.save,
-                UserController.save
-            );
-            
-            /**
-             * Save user - Create & Update
-             * 
-             */
-            router.post('/users/toggleActiveState',
-                middlewares.adminOnlyCheck,
-                [
-                    check('id').exists().withMessage('User ID is required.'),
-                ],
-                middlewares.validatorResult,
-                UserController.toggleActiveState
-            );
+/**
+ * Save user - Create & Update
+ *
+ */
+router.post('/users/save',
+    middlewares.adminOnlyCheck,
+    upload.single('avatar'),
+    middlewares.routes.users.save,
+    UserController.save
+);
 
-            /**
-             * Get all users
-             * 
-             */
-            router.post('/users/getAll', UserController.getAll);
+/**
+ * Save user - Create & Update
+ *
+ */
+router.post('/users/toggleActiveState',
+    middlewares.adminOnlyCheck,
+    [
+        check('id').exists().withMessage('User ID is required.'),
+    ],
+    middlewares.validatorResult,
+    UserController.toggleActiveState
+);
 
-    
-    /**
-     * Service ednpoints
-     */
-
-            /**
-             * Save Service Category - Create & Update
-             */
-            router.post('/services/saveCategory',
-                middlewares.adminOnlyCheck,
-                middlewares.routes.services.saveCategory,
-                ServiceController.saveCategory
-            );
-
-            /**
-             * Toggle Service Category active state
-             */
-            router.post('/services/toggleActiveServiceCategoryState',
-                middlewares.adminOnlyCheck,
-                [
-                    check('id').exists().withMessage('Service Category ID is required.'),
-                ],
-                middlewares.validatorResult,
-                ServiceController.toggleActiveServiceCategoryState
-            );
-
-            /**
-             * Save Service - Create & Update
-             */
-            router.post('/services/saveService',
-                middlewares.adminOnlyCheck,
-                upload.single('avatar'),
-                middlewares.routes.services.saveService,
-                ServiceController.saveService
-            );
-
-            /**
-             * Toggle Service active state
-             */
-            router.post('/services/toggleActiveServiceState',
-                middlewares.adminOnlyCheck,
-                [
-                    check('id').exists().withMessage('Service ID is required.'),
-                ],
-                middlewares.validatorResult,
-                ServiceController.toggleActiveServiceState
-            );
-
-            /**
-             * Get all services
-             */
-            router.post('/services/getAll',
-                middlewares.routes.services.getAll,    
-                ServiceController.getAll
-            );
+/**
+ * Get all users
+ *
+ */
+router.post('/users/getAll', UserController.getAll);
 
 
-    /**
-     * Site order endpoints
-     */
+/**
+ * Get all users
+ *
+ */
+router.get('/users/getMe', UserController.getMe);
 
 
-            /**
-             * Create site order
-             */
-            router.post('/site/createOrder',
-                middlewares.routes.site.createOrder,
-                SiteOrderController.createOrder
-            );
-        
-            /**
-             * Get all site orders
-             */
-            router.post('/site/getOrders', SiteOrderController.getOrders);
+/**
+ * Service ednpoints
+ */
 
-            /**
-             * Change order status
-             */
-            router.post('/site/changeOrderStatus',
-                middlewares.routes.site.changeOrderStatus,
-                SiteOrderController.changeOrderStatus
-            );
+/**
+ * Save Service Category - Create & Update
+ */
+router.post('/services/saveCategory',
+    middlewares.adminOnlyCheck,
+    middlewares.routes.services.saveCategory,
+    ServiceController.saveCategory
+);
 
-            /**
-             * Get available hours for booking for specific date
-             */
-            router.post('/site/getAvailableHours',
-                middlewares.adminOnlyCheck,
-                [
-                    check('date').exists().withMessage('Service ID is required.'),
-                ],
-                middlewares.validatorResult,
-                SiteOrderController.getAvailableHours
-            );
+/**
+ * Toggle Service Category active state
+ */
+router.post('/services/toggleActiveServiceCategoryState',
+    middlewares.adminOnlyCheck,
+    [
+        check('id').exists().withMessage('Service Category ID is required.'),
+    ],
+    middlewares.validatorResult,
+    ServiceController.toggleActiveServiceCategoryState
+);
 
-            /**
-             * Handle the Contact form from the site and send the inquiry with attachments
-             */
-            router.post('/site/inquiry',
-                upload.array('attachment', 3),
-                middlewares.routes.site.inquiry,
-                SiteOrderController.inquiry
-            );
+/**
+ * Save Service - Create & Update
+ */
+router.post('/services/saveService',
+    middlewares.adminOnlyCheck,
+    upload.single('avatar'),
+    middlewares.routes.services.saveService,
+    ServiceController.saveService
+);
 
-    /**
-     * Clients ednpoints
-     */
+/**
+ * Toggle Service active state
+ */
+router.post('/services/toggleActiveServiceState',
+    middlewares.adminOnlyCheck,
+    [
+        check('id').exists().withMessage('Service ID is required.'),
+    ],
+    middlewares.validatorResult,
+    ServiceController.toggleActiveServiceState
+);
 
-            /**
-             * Save client for both Create and Update
-             */
-            router.post('/clients/save',
-                middlewares.routes.clients.save,
-            
-                ClientController.save
-            );
-
-            /**
-             * Save client for both Create and Update
-             */
-            router.post('/clients/addAddress',
-                [
-                    check('address').exists().withMessage('Address is required.'),
-                    check('clientId').exists().withMessage('Client ID is required.'),
-                ],
-                middlewares.validatorResult,
-                ClientController.addAddress
-            );
-
-            /**
-             * Save client for both Create and Update
-             */
-            router.post('/clients/deleteAddress',
-                [
-                    check('id').exists().withMessage('ID is required.'),
-                ],
-                middlewares.validatorResult,
-                ClientController.deleteAddress
-            );
-
-            /**
-             * Get clients by filter
-             */
-            router.post('/clients/filter', ClientController.filter);
+/**
+ * Get all services
+ */
+router.post('/services/getAll',
+    middlewares.routes.services.getAll,
+    ServiceController.getAll
+);
 
 
-
-    /**
-     * Orders endpoints
-     */
-
-
-            /**
-             * Create order
-             */
-            // router.post('/orders/createOrder',
-            //     middlewares.routes.orders.createOrder,
-            //     OrderController.createOrder
-            // )
+/**
+ * Site order endpoints
+ */
 
 
-    /**
-     * Configuration endpoints
-     */
+/**
+ * Create site order
+ */
+router.post('/site/createOrder',
+    middlewares.routes.site.createOrder,
+    SiteOrderController.createOrder
+);
+
+/**
+ * Get all site orders
+ */
+router.post('/site/getOrders', SiteOrderController.getOrders);
+
+/**
+ * Change order status
+ */
+router.post('/site/changeOrderStatus',
+    middlewares.routes.site.changeOrderStatus,
+    SiteOrderController.changeOrderStatus
+);
+
+/**
+ * Get available hours for booking for specific date
+ */
+router.post('/site/getAvailableHours',
+    middlewares.adminOnlyCheck,
+    [
+        check('date').exists().withMessage('Service ID is required.'),
+    ],
+    middlewares.validatorResult,
+    SiteOrderController.getAvailableHours
+);
+
+/**
+ * Handle the Contact form from the site and send the inquiry with attachments
+ */
+router.post('/site/inquiry',
+    upload.array('attachment', 3),
+    middlewares.routes.site.inquiry,
+    SiteOrderController.inquiry
+);
+
+/**
+ * Clients ednpoints
+ */
+
+/**
+ * Save client for both Create and Update
+ */
+router.post('/clients/save',
+    middlewares.routes.clients.save,
+
+    ClientController.save
+);
+
+/**
+ * Save client for both Create and Update
+ */
+router.post('/clients/addAddress',
+    [
+        check('address').exists().withMessage('Address is required.'),
+        check('clientId').exists().withMessage('Client ID is required.'),
+    ],
+    middlewares.validatorResult,
+    ClientController.addAddress
+);
+
+/**
+ * Save client for both Create and Update
+ */
+router.post('/clients/deleteAddress',
+    [
+        check('id').exists().withMessage('ID is required.'),
+    ],
+    middlewares.validatorResult,
+    ClientController.deleteAddress
+);
+
+/**
+ * Get clients by filter
+ */
+router.post('/clients/filter', ClientController.filter);
 
 
-            /**
-             * Get all configuration settings
-             */
-            router.post('/configuration/getAll', ConfigurationController.getAll);
+/**
+ * Orders endpoints
+ */
 
 
-            /**
-             * Save configuration - Both Cerate & Update
-             */
-            router.post('/configuration/save',
-                middlewares.adminOnlyCheck,
-                middlewares.routes.configuration.save,
-                ConfigurationController.save
-            );
-
-            /**
-             * Delete configuration setting
-             */
-            router.post('/configuration/delete',
-                middlewares.adminOnlyCheck,
-                [
-                    check('id').exists().withMessage('ID is required.'),
-                ],
-                middlewares.validatorResult,
-                ConfigurationController.delete
-            );
+/**
+ * Create order
+ */
+router.post('/orders/createOrder',
+    middlewares.routes.orders.createOrder,
+    OrderController.createOrder
+)
 
 
-    /**
-     * NFC endpoints
-     */
-            /**
-             * Create order
-             */
-            // router.post('/nfc/createOrder',
-            //     middlewares.routes.orders.createOrder,
-            //     OrderController.createOrder
-            // )
-            
+/**
+ * Configuration endpoints
+ */
+
+
+/**
+ * Get all configuration settings
+ */
+router.post('/configuration/getAll', ConfigurationController.getAll);
+
+
+/**
+ * Save configuration - Both Cerate & Update
+ */
+router.post('/configuration/save',
+    middlewares.adminOnlyCheck,
+    middlewares.routes.configuration.save,
+    ConfigurationController.save
+);
+
+/**
+ * Delete configuration setting
+ */
+router.post('/configuration/delete',
+    middlewares.adminOnlyCheck,
+    [
+        check('id').exists().withMessage('ID is required.'),
+    ],
+    middlewares.validatorResult,
+    ConfigurationController.delete
+);
+
+
+/**
+ * NFC endpoints
+ */
+/**
+ * Create order
+ */
+// router.post('/nfc/createOrder',
+//     middlewares.routes.orders.createOrder,
+//     OrderController.createOrder
+// )
 
 
 /**
@@ -310,8 +313,9 @@ router.get('/avatar/:image', middlewares.routes.avatar);
 /**
  * List of available endpoints
  */
-router.get('/api', (req, res) => res.json({data: 
-    "Comming soon."
+router.get('/api', (req, res) => res.json({
+    data:
+        "Comming soon."
 }));
 
 /**

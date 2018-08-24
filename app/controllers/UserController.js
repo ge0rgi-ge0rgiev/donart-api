@@ -4,10 +4,10 @@ const bcrypt = require('bcrypt'),
     errors = require('../libs/response-errors'),
     UserModel = require('../models/UserModel');
 
-    
+
 /**
  * API token authentication
- * 
+ *
  */
 exports.login = (req, res, next) => {
     let returnData;
@@ -23,7 +23,7 @@ exports.login = (req, res, next) => {
         .then((user) => {
             // Check for previously created user session
             res.locals.user = user;
-            return SessionModel.getSessionData({ userId: user.id });
+            return SessionModel.getSessionData({userId: user.id});
         })
         .then((session) => {
             // If there is a created session, update the session expiration and return the session object
@@ -60,13 +60,13 @@ exports.login = (req, res, next) => {
 
 /**
  * Update user session with refresh token
- * 
+ *
  */
 exports.refreshSession = (req, res, next) => {
     let SessionModel = require('../models/SessionModel');
 
     // Get user session by refreshToken parameter
-    SessionModel.getSessionData({ refreshToken: req.headers.refreshtoken })
+    SessionModel.getSessionData({refreshToken: req.headers.refreshtoken})
         .then((session) => {
             // Check for available session
             if (session === undefined) throw new errors.InvalidParameters('Invalid refresh token.');
@@ -80,7 +80,7 @@ exports.refreshSession = (req, res, next) => {
 
 /**
  * Create or update existing user
- * 
+ *
  */
 exports.save = (req, res, next) => {
     UserModel.save(req.body)
@@ -111,14 +111,24 @@ exports.save = (req, res, next) => {
 
 /**
  * Get all users
- * 
+ *
  */
 exports.getAll = (req, res, next) => {
     let pagination = functions.getPaginationOptions(req);
     UserModel.getUsers(pagination)
         .then(users => res.sendSuccess(users))
         .catch(err => next(err));
-}
+};
+
+/**
+ * Get me
+ *
+ */
+exports.getMe = (req, res, next) => {
+    UserModel.getMe(res.locals.session)
+        .then(user => res.sendSuccess(user))
+        .catch(err => next(err));
+};
 
 /**
  * Toggle the active user state
@@ -127,5 +137,5 @@ exports.toggleActiveState = (req, res, next) => {
     UserModel.toggleActiveState(req.body.id)
         .then(user => res.sendSuccess(user))
         .catch(err => next(err));
-}
+};
 

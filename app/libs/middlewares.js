@@ -7,7 +7,7 @@ module.exports = {
 
     /**
      * Check the auth session for protected resources
-     * 
+     *
      */
     authMiddleware: (req, res, next) => {
         // The requested endpoint is unprotected?
@@ -40,7 +40,7 @@ module.exports = {
 
     // Validates result for express generator checks
     validatorResult: (req, res, next) => {
-        const { validationResult } = require('express-validator/check');
+        const {validationResult} = require('express-validator/check');
         let _errors = validationResult(req);
         if (!_errors.isEmpty()) {
             let errMessage = 'Express validator: ';
@@ -96,7 +96,7 @@ module.exports = {
                         next();
                     });
             },
-            
+
             /**
              * Validations before user save
              */
@@ -105,8 +105,7 @@ module.exports = {
                  * Update user
                  */
                 if (req.body.id) {
-                    req.check("name").optional().
-                        isLength({min: 3}).withMessage('Invalid name.');
+                    req.check("name").optional().isLength({min: 3}).withMessage('Invalid name.');
                     req.check("password").optional()
                         .isLength({min: 3}).withMessage('Invalid name.');
                 } else {
@@ -127,10 +126,10 @@ module.exports = {
 
                 // Return validation errors
                 if (validationErrors) return next(functions.formatExpValErrors(validationErrors));
-                
+
                 next();
             }
-            
+
         },
 
         avatar: (req, res, next) => {
@@ -145,7 +144,7 @@ module.exports = {
         },
 
         services: {
-            
+
             saveCategory: (req, res, next) => {
                 // Create action
                 if (req.body.id === undefined) {
@@ -154,7 +153,7 @@ module.exports = {
 
                 var validationErrors = req.validationErrors();
                 if (validationErrors) return next(functions.formatExpValErrors(validationErrors));
-                
+
                 next();
             },
 
@@ -179,7 +178,7 @@ module.exports = {
 
                 // Return validation errors
                 if (validationErrors) return next(functions.formatExpValErrors(validationErrors));
-                
+
                 next();
             },
 
@@ -201,7 +200,7 @@ module.exports = {
         },
 
         site: {
-            
+
             createOrder: (req, res, next) => {
                 // Required fields for fast type order
                 req.check("firstName").exists().withMessage('Required field.');
@@ -236,9 +235,12 @@ module.exports = {
                     // Check for valid order product fields
                     let err = false;
                     for (var i in req.body.products) {
-                        if (req.body.products[i]['serviceId'] === undefined) err = true; break;
-                        if (req.body.products[i]['count'] === undefined) err = true; break;
-                        if (req.body.products[i]['totalAmount'] === undefined) err = true; break;
+                        if (req.body.products[i]['serviceId'] === undefined) err = true;
+                        break;
+                        if (req.body.products[i]['count'] === undefined) err = true;
+                        break;
+                        if (req.body.products[i]['totalAmount'] === undefined) err = true;
+                        break;
                     }
 
                     if (err === true)
@@ -246,10 +248,10 @@ module.exports = {
                 }
 
                 var validationErrors = req.validationErrors();
-                
+
                 // Return validation errors
                 if (validationErrors) return next(functions.formatExpValErrors(validationErrors));
-                
+
                 next();
             },
 
@@ -258,7 +260,7 @@ module.exports = {
                 req.check("status").exists().withMessage('Required field.');
 
                 var validationErrors = req.validationErrors();
-                
+
                 // Return validation errors
                 if (validationErrors) return next(functions.formatExpValErrors(validationErrors));
 
@@ -286,7 +288,7 @@ module.exports = {
                         throw new errors.InvalidParameters('Invalid phone.');
 
                 var validationErrors = req.validationErrors();
-                
+
                 // Return validation errors
                 if (validationErrors) return next(functions.formatExpValErrors(validationErrors));
 
@@ -332,7 +334,7 @@ module.exports = {
                 req.check("paymentStatus").exists().withMessage('Required field.');
 
                 var validationErrors = req.validationErrors();
-                
+
                 // Return validation errors
                 if (validationErrors) return next(functions.formatExpValErrors(validationErrors));
 
@@ -349,7 +351,7 @@ module.exports = {
                 }
 
                 var validationErrors = req.validationErrors();
-                
+
                 // Return validation errors
                 if (validationErrors) return next(functions.formatExpValErrors(validationErrors));
 
